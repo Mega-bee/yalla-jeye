@@ -1,292 +1,231 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
-import 'package:yallajeye/constants/colors_textStyle.dart';
-import 'package:yallajeye/models/Adresses.dart';
-import 'package:yallajeye/providers/order.dart';
-import 'package:yallajeye/screens/order/promoCode.dart';
-import 'package:yallajeye/screens/settings/addresses/create_update_address.dart';
-import 'package:yallajeye/widgets/address_card.dart';
-import 'package:yallajeye/widgets/custom_alert_dialog.dart';
+import 'dart:async';import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 
-import '../../providers/address.dart';
+import '../../constants/colors_textStyle.dart';
 
-class Location extends StatefulWidget {
-  const Location({Key key}) : super(key: key);
+
+class LocationMap extends StatefulWidget {
+
 
   @override
-  _LocationState createState() => _LocationState();
+
+  LocationMapState createState() => LocationMapState();
 }
 
-class _LocationState extends State<Location> {
-  bool PlacedOrder = false;
-  bool _isLoading = false;
+class LocationMapState extends State<LocationMap> {
 
-  @override
-  void initState() {
-    getData();
-    super.initState();
+    GoogleMapController googleMapController;
+
+  static const LatLng _center = const LatLng(45.521563, -122.677433);
+  Location currentLocation = Location();
+
+  // void getLocation() async{
+  //   final c = await _controller.future;
+  //   var location = await currentLocation.getLocation();
+  //   currentLocation.onLocationChanged.listen((LocationData loc){
+  //
+  //     c.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
+  //       target: LatLng(loc.latitude ?? 0.0,loc.longitude?? 0.0),
+  //       zoom: 12.0,
+  //     )));
+  //     print(loc.latitude);
+  //     print(loc.longitude);
+  //     setState(() {
+  //       _markers.add(Marker(markerId: MarkerId('Home'),
+  //           position: LatLng(loc.latitude ?? 0.0, loc.longitude ?? 0.0)
+  //       ));
+  //     });
+  //   });
+  // }
+
+  void _onMapCreated(GoogleMapController controller) {
+
+  }
+  MapType _currentMapType = MapType.normal;
+  final Set<Marker> _markers = {};
+  LatLng _lastMapPosition = _center;
+
+  void _onCameraMove(CameraPosition position) {
+    _lastMapPosition = position.target;
   }
 
-  getData() async {
-    final address = Provider.of<AddressProvider>(context, listen: false);
-    address.addressChoosen = AddressesModel();
-    await address.getAllAddresses();
-  }
+  void _onMapTypeButtonPressed() {
 
-  @override
-  Widget build(BuildContext context) {
-    final address = Provider.of<AddressProvider>(context, listen: true);
-    final order = Provider.of<OrderProvider>(context, listen: true);
-    var screenHeight =
-        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(
-          "Location",
-          style: appBarText,
+    setState(() {
+      _currentMapType = _currentMapType == MapType.normal
+          ? MapType.satellite
+          : MapType.normal;
+    });
+  }
+  LatLng currentLatLng = LatLng(
+      33.8463, 35.9020); //initial currentPosition values cannot assign null values
+
+  bool loading = false;
+
+
+Future<Position> _determinePosition() async {
+    bool serviceEnable;
+    LocationPermission permission;
+    serviceEnable = await Geolocator.isLocationServiceEnabled();
+
+    if (!serviceEnable) {
+      return Future.error('Location Are Disable');
+    }
+    permission =await Geolocator.checkPermission();
+    if(permission ==LocationPermission.denied){
+      permission = await Geolocator.requestPermission();
+      if (permission ==LocationPermission.denied){
+        return Future.error('Location Permission Denied');
+      }
+    }
+   if (permission ==LocationPermission.deniedForever){
+     return Future.error('Location Permission Are Permanently Denied');
+   }
+   Position position = await Geolocator.getCurrentPosition();
+   return position;
+    }
+
+
+  void _onAddMarkerButtonPressed() {
+    setState(() {
+      _markers.add(Marker(
+        // This marker id can be anything that uniquely identifies each marker.
+        markerId: MarkerId(_lastMapPosition.toString()),
+        position: _lastMapPosition,
+        infoWindow: InfoWindow(
+          title: 'Really cool place',
+          snippet: '5 Star Rating',
         ),
-        foregroundColor: yellowColor,
-        actions: [
-          IconButton(
-              onPressed: () {
-                address.isCreateAddress = true;
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (_) => CreateAddress()));
-              },
-              icon: Icon(Icons.add))
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const FittedBox(
-                child: Text(
-                  "Where do you want\nthings delivered?",
-                  style: TextStyle(
-                      fontSize: 40,
-                      fontFamily: "BerlinSansFB",
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(
-                  "Type in new Address or choose an old one!",
-                  style: TextStyle(fontSize: 17, fontFamily: "BerlinSansFB"),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  showCupertinoModalPopup(
-                      context: context,
-                      builder: (context) {
-                        final address =
-                            Provider.of<AddressProvider>(context, listen: true);
-                        return Container(
-                          height: screenHeight * 0.3,
-                          width: double.infinity,
-                          color: Colors.white,
-                          child: address.loading
-                              ? Center(
-                                  child: CircularProgressIndicator(),
-                                )
-                              : address.addresses.length == 0
-                                  ? CupertinoButton(
-                                      child: Text("Please add address"),
-                                      onPressed: () {
-                                        address.isCreateAddress = true;
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (_) =>
-                                                    CreateAddress()));
-                                      })
-                                  : Column(
-                                      children: [
-                                        CupertinoButton(
-                                            child: Text("Pick Address"),
-                                            onPressed: () {
-                                              if (address.addressChoosen.id ==
-                                                  0) {
-                                                address.addressChoosen =
-                                                    address.addresses[0];
-                                                setState(() {});
-                                              }
-                                            }),
-                                        // const Text("Pick Address",style: TextStyle(color: redColor,fontSize: 15,fontFamily: 'BerlinSansFB',),),
-                                        Expanded(
-                                          child: CupertinoPicker(
-                                            backgroundColor: Colors.white,
-                                            itemExtent: 30,
-                                            scrollController:
-                                                FixedExtentScrollController(
-                                                    initialItem: 0),
-                                            children: address.addresses
-                                                .map((element) {
-                                              return Text(element.title);
-                                            }).toList(),
-                                            onSelectedItemChanged: (value) {
-                                              setState(() {
-                                                address.addressChoosen =
-                                                    address.addresses[value];
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                        );
-                      });
-                },
-                child: Container(
-                  padding: EdgeInsets.only(
-                      left: screenHeight * 0.02, right: screenHeight * 0.02),
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  width: double.infinity,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      address.addressChoosen.title.isEmpty
-                          ? const Text(
-                              "Address",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontFamily: 'BerlinSansFB',
-                                fontWeight: FontWeight.w600,
-                                color: Color.fromRGBO(135, 135, 135, 1),
-                              ),
-                            )
-                          : Text(address.addressChoosen.title,
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontFamily: 'BerlinSansFB',
-                                fontWeight: FontWeight.w600,
-                                color: Color.fromRGBO(135, 135, 135, 1),
-                              )),
-                      Icon(
-                        FontAwesomeIcons.caretDown,
-                        color: Color.fromRGBO(135, 135, 135, 1),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              address.addressChoosen.id == 0
-                  ? Container(
-                      height: screenHeight * 0.2,
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: AddressCard(
-                        address.addressChoosen.title,
-                        address.addressChoosen.city,
-                        address.addressChoosen.street,
-                        address.addressChoosen.buildingName,
-                        address.addressChoosen.floorNumber.toString(),
-                      ),
-                    ),
-              _isLoading
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : Column(
-                    children: [
-                      // ElevatedButton(onPressed: (){
-                      //   Navigator.push(
-                      //       context,
-                      //       MaterialPageRoute(
-                      //           builder: (context) =>
-                      //               PromoCode()));
-                      // }, child: Text('Redeem code'),),
-                      SizedBox(height: 30,),
-                      Center(
-                          child: ElevatedButton(
-                            onPressed: (){
-                              setState(() {
-                                _isLoading = true;
-                              });
-                              showDialog(
-                                  context: context,
-                                  builder: (context) =>
-                                      CustomAlertDialog(title: "Are you sure  you want to order? You can't change the order later", content: "", cancelBtnFn: () => Navigator.pop(context, false),
-                                        confrimBtnFn: ()async{
-                                        if (address.addressChoosen.id == 0) {
-                                          Fluttertoast.showToast(
-                                              msg: "Please choose an address",
-                                              fontSize: 15,
-                                              gravity: ToastGravity.BOTTOM,
-                                              timeInSecForIosWeb: 2,
-                                              textColor: Colors.white,
-                                              backgroundColor: redColor,
-                                              toastLength: Toast.LENGTH_SHORT);
-                                        } else {
-                                          setState(() {
-                                            _isLoading = true;
-                                          });
-                                          PlacedOrder = await order
-                                              .placeOrder(address.addressChoosen.id);
-                                          if (!PlacedOrder) {
-                                            showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return AlertDialog(
-                                                    title: Text(order.messagePlaceOrder),
-                                                  );
-                                                });
-                                          } else {
-                                            Navigator.of(context).pushAndRemoveUntil(
-                                                MaterialPageRoute(
-                                                    builder: (_) => PromoCode()),
-                                                    (Route<dynamic> route) => false);
-                                          }
-                                          setState(() {
-                                            _isLoading = false;
-                                          });
-                                          order.clearFields();
-                                          address.addressChoosen = AddressesModel();
-                                        }
-                                      },)
+        icon: BitmapDescriptor.defaultMarker,
+      ));
+    });
+  }
+  @override
 
-                              );
-                              setState(() {
-                                _isLoading = false;
-                              });
-                            },
-                              child: Text("Place Order",
-                                  style: TextStyle(
-                                    color: yellowColor,
-                                    fontFamily: 'BerlinSansFB',
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                  )),
-                              style: ElevatedButton.styleFrom(
-                                primary: Color(0xFF333333),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 20, horizontal: 40),
-                                side:
-                                    const BorderSide(color: Colors.black, width: 1),
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                // backgroundColor: const Color(0xFF333333)),),
-                              ))),
-                    ],
-                  ),
-            ],
+  Widget build(BuildContext context) {
+
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+
+      home: Scaffold(
+
+        appBar: AppBar(
+          title: Text('Map'),
+          leading: IconButton(
+            onPressed: (){Navigator.pop(context);},
+            icon: Icon(Icons.arrow_back),
+
           ),
+          backgroundColor:redColor,
+        ),
+        body: Stack(
+          children: <Widget>[
+            GoogleMap(
+              onCameraMove: _onCameraMove,
+              markers: _markers,
+              myLocationEnabled: true,
+              mapType: _currentMapType,
+              buildingsEnabled: true,
+              compassEnabled: true,
+              mapToolbarEnabled: true,
+              myLocationButtonEnabled: false,
+              onMapCreated: _onMapCreated,
+              initialCameraPosition:
+
+              CameraPosition(target: currentLatLng,zoom: 10.2),
+
+
+              ),
+
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Column(
+                  children:[
+                    FloatingActionButton(
+                    onPressed: () => _onMapTypeButtonPressed(),
+                    materialTapTargetSize: MaterialTapTargetSize.padded,
+                    backgroundColor:redColor,
+                    child: const Icon(Icons.map, size: 30.0),
+                  ),
+                    SizedBox(height: 12,),
+                    FloatingActionButton(
+                      onPressed: _onAddMarkerButtonPressed,
+                      materialTapTargetSize: MaterialTapTargetSize.padded,
+                      backgroundColor:redColor,
+                      child: const Icon(Icons.add_location, size: 30.0),
+                    ),
+                    SizedBox(height: 12,),
+                    // FloatingActionButton(
+                    //   onPressed: () async{
+                    //     Position position = await _determinePosition();
+                    //     googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(
+                    //       position.latitude,position.longitude,
+                    //     ),zoom: 10,
+                    //     )));
+                    //     _markers.clear();
+                    //     _markers.add(Marker(markerId: MarkerId('Current Location'),position:LatLng(position.latitude,position.longitude,),
+                    //     ));
+                    //     setState(() {
+                    //
+                    //     });
+                    //   },
+                    //   materialTapTargetSize: MaterialTapTargetSize.padded,
+                    //   backgroundColor:redColor,
+                    //   child: const Icon(Icons.add, size: 30.0),
+                    // ),
+
+            //         FloatingActionButton(
+            // child: Icon(Icons.location_searching,color: Colors.white,),
+            // onPressed: (){
+            //   getLocation();
+            // },)
+                ]),
+              ),
+            ),
+            Align(
+                alignment: Alignment.center,
+                // child: !loadingconf?
+                // InkWell(
+                //
+                //     onTap: () async {
+                //       setState(() {
+                //         loadingconf==true;
+                //       });
+                //       await getCurrentLocation();
+                //       setState(() {
+                //         loadingconf==false;
+                //       });
+                //     },
+                    child: Icon(
+                      Icons.place,
+                      size: 20,
+                      color: redColor,
+                    ))
+
+          ],
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: FloatingActionButton.extended(
+
+          backgroundColor: redColor,
+          
+
+          shape:  RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+              side: BorderSide(width: 1,color: yellowColor)),
+          elevation: 2,
+           label:Text("Confirm Location",style: TextStyle(fontSize: 10),),
+          onPressed: (){
+            Navigator.pop(context);
+          },
         ),
       ),
     );
+
   }
 }

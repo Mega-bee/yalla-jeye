@@ -32,6 +32,10 @@ dependencies:
   provider:
   shared_preferences:
   http:
+  google_maps_flutter:
+  geolocator:
+  geocoding:
+  location:
   form_field_validator:
   font_awesome_flutter:
   flutter_launcher_icons:
