@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:yallajeye/constants/colors_textStyle.dart';
 import 'package:yallajeye/driver/navigation.dart';
 import 'package:yallajeye/driver/tracking-cardNN.dart';
+import 'package:yallajeye/providers/NotificationProvider.dart';
 import 'package:yallajeye/providers/address.dart';
 import 'package:yallajeye/providers/homePage.dart';
 import 'package:yallajeye/providers/order.dart';
@@ -33,8 +34,14 @@ import 'screens/auth/signin_screen.dart';
 
  await FirebaseMessaging.instance.getToken().then((value) => print("firebase token is $value"));
 
+  ///TOPIC FCM
+  await FirebaseMessaging.instance.subscribeToTopic('all');
+
+
+
   SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]
+  );
   runApp(const MyApp());
 }
 class appstate extends StatefulWidget {
@@ -105,6 +112,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: UserProvider.statusfunction()),
         ChangeNotifierProvider.value(value: AddressProvider()),
         ChangeNotifierProvider.value(value: HomePageProvider()),
+        ChangeNotifierProvider.value(value: NotificationProvider()),
         // ChangeNotifierProvider.value(value: PersonalInfoProvider()),
                       ],
       child: MaterialApp(

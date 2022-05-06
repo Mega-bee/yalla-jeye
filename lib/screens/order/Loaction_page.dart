@@ -46,8 +46,11 @@ class _LocationPState extends State<LocationP> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: Navigator.of(context).pop,
-          icon: Icon(Icons.arrow_back, size: 41,
-            color: Color.fromRGBO(254, 212, 48, 1),),
+          icon: Icon(
+            Icons.arrow_back,
+            size: 41,
+            color: Color.fromRGBO(254, 212, 48, 1),
+          ),
         ),
         automaticallyImplyLeading: false,
         title: Text(
@@ -93,59 +96,60 @@ class _LocationPState extends State<LocationP> {
                       context: context,
                       builder: (context) {
                         final address =
-                        Provider.of<AddressProvider>(context, listen: true);
+                            Provider.of<AddressProvider>(context, listen: true);
                         return Container(
                           height: screenHeight * 0.3,
                           width: double.infinity,
                           color: Colors.white,
                           child: address.loading
                               ? Center(
-                            child: CircularProgressIndicator(),
-                          )
+                                  child: CircularProgressIndicator(),
+                                )
                               : address.addresses.length == 0
-                              ? CupertinoButton(
-                              child: Text("Please add address"),
-                              onPressed: () {
-                                address.isCreateAddress = true;
-                                Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                        builder: (_) =>
-                                            CreateAddress()));
-                              })
-                              : Column(
-                            children: [
-                              CupertinoButton(
-                                  child: Text("Pick Address"),
-                                  onPressed: () {
-                                    if (address.addressChoosen.id ==
-                                        0) {
-                                      address.addressChoosen =
-                                      address.addresses[0];
-                                      setState(() {});
-                                    }
-                                  }),
-                              // const Text("Pick Address",style: TextStyle(color: redColor,fontSize: 15,fontFamily: 'BerlinSansFB',),),
-                              Expanded(
-                                child: CupertinoPicker(
-                                  backgroundColor: Colors.white,
-                                  itemExtent: 30,
-                                  scrollController:
-                                  FixedExtentScrollController(
-                                      initialItem: 0),
-                                  children: address.addresses
-                                      .map((element) {
-                                    return Text(element.title);
-                                  }).toList(),
-                                  onSelectedItemChanged: (value) {
-                                    setState(() {
-                                      address.addressChoosen =
-                                      address.addresses[value];
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
+                                  ? CupertinoButton(
+                                      child: Text("Please add address"),
+                                      onPressed: () {
+                                        address.isCreateAddress = true;
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    CreateAddress()));
+                                      })
+                                  : Column(
+                                      children: [
+                                        CupertinoButton(
+                                            child: Text("Pick Address"),
+                                            onPressed: () {
+                                              if (address.addressChoosen.id ==
+                                                  0) {
+                                                address.addressChoosen =
+                                                    address.addresses[0];
+                                                setState(() {});
+                                              }
+                                              Navigator.pop(context);
+                                            }),
+                                        // const Text("Pick Address",style: TextStyle(color: redColor,fontSize: 15,fontFamily: 'BerlinSansFB',),),
+                                        Expanded(
+                                          child: CupertinoPicker(
+                                            backgroundColor: Colors.white,
+                                            itemExtent: 30,
+                                            scrollController:
+                                                FixedExtentScrollController(
+                                                    initialItem: 0),
+                                            children: address.addresses
+                                                .map((element) {
+                                              return Text(element.title);
+                                            }).toList(),
+                                            onSelectedItemChanged: (value) {
+                                              setState(() {
+                                                address.addressChoosen =
+                                                    address.addresses[value];
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                         );
                       });
                 },
@@ -164,21 +168,21 @@ class _LocationPState extends State<LocationP> {
                     children: [
                       address.addressChoosen.title.isEmpty
                           ? const Text(
-                        "Address",
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontFamily: 'BerlinSansFB',
-                          fontWeight: FontWeight.w600,
-                          color: Color.fromRGBO(135, 135, 135, 1),
-                        ),
-                      )
+                              "Address",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontFamily: 'BerlinSansFB',
+                                fontWeight: FontWeight.w600,
+                                color: Color.fromRGBO(135, 135, 135, 1),
+                              ),
+                            )
                           : Text(address.addressChoosen.title,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontFamily: 'BerlinSansFB',
-                            fontWeight: FontWeight.w600,
-                            color: Color.fromRGBO(135, 135, 135, 1),
-                          )),
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontFamily: 'BerlinSansFB',
+                                fontWeight: FontWeight.w600,
+                                color: Color.fromRGBO(135, 135, 135, 1),
+                              )),
                       Icon(
                         FontAwesomeIcons.caretDown,
                         color: Color.fromRGBO(135, 135, 135, 1),
@@ -189,105 +193,121 @@ class _LocationPState extends State<LocationP> {
               ),
               address.addressChoosen.id == 0
                   ? Container(
-                height: screenHeight * 0.2,
-              )
+                      height: screenHeight * 0.2,
+                    )
                   : Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: AddressCard(
-                  address.addressChoosen.title,
-                  address.addressChoosen.city,
-                  address.addressChoosen.street,
-                  address.addressChoosen.buildingName,
-                  address.addressChoosen.floorNumber.toString(),
-                ),
-              ),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: AddressCard(
+                        address.addressChoosen.title,
+                        address.addressChoosen.city,
+                        address.addressChoosen.street,
+                        address.addressChoosen.buildingName,
+                        address.addressChoosen.floorNumber.toString(),
+                      ),
+                    ),
               _isLoading
                   ? Center(
-                child: CircularProgressIndicator(),
-              )
+                      child: CircularProgressIndicator(),
+                    )
                   : Column(
-                children: [
-                  // ElevatedButton(onPressed: (){
-                  //   Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(
-                  //           builder: (context) =>
-                  //               PromoCode()));
-                  // }, child: Text('Redeem code'),),
-                  SizedBox(height: 30,),
-                  Center(
-                      child: ElevatedButton(
-                          onPressed: (){
-                            setState(() {
-                              _isLoading = true;
-                            });
-                            showDialog(
-                                context: context,
-                                builder: (context) =>
-                                    CustomAlertDialog(title: "Are you sure  you want to order? You can't change the order later", content: "", cancelBtnFn: () => Navigator.pop(context, false),
-                                      confrimBtnFn: ()async{
-                                        if (address.addressChoosen.id == 0) {
-                                          Fluttertoast.showToast(
-                                              msg: "Please choose an address",
-                                              fontSize: 15,
-                                              gravity: ToastGravity.BOTTOM,
-                                              timeInSecForIosWeb: 2,
-                                              textColor: Colors.white,
-                                              backgroundColor: redColor,
-                                              toastLength: Toast.LENGTH_SHORT);
-                                        } else {
-                                          setState(() {
-                                            _isLoading = true;
-                                          });
-                                          PlacedOrder = await order
-                                              .placeOrder(address.addressChoosen.id);
-                                          if (!PlacedOrder) {
-                                            showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return AlertDialog(
-                                                    title: Text(order.messagePlaceOrder),
-                                                  );
+                      children: [
+                        // ElevatedButton(onPressed: (){
+                        //   Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //           builder: (context) =>
+                        //               PromoCode()));
+                        // }, child: Text('Redeem code'),),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Center(
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _isLoading = true;
+                                  });
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => CustomAlertDialog(
+                                            title:
+                                                "Are you sure  you want to order? You can't change the order later",
+                                            content: "",
+                                            cancelBtnFn: () =>
+                                                Navigator.pop(context, false),
+                                            confrimBtnFn: () async {
+                                              if (address.addressChoosen.id ==
+                                                  0) {
+                                                Fluttertoast.showToast(
+                                                    msg:
+                                                        "Please choose an address",
+                                                    fontSize: 15,
+                                                    gravity:
+                                                        ToastGravity.BOTTOM,
+                                                    timeInSecForIosWeb: 2,
+                                                    textColor: Colors.white,
+                                                    backgroundColor: redColor,
+                                                    toastLength:
+                                                        Toast.LENGTH_SHORT);
+                                              } else {
+                                                setState(() {
+                                                  _isLoading = true;
                                                 });
-                                          } else {
-                                            Navigator.of(context).pushAndRemoveUntil(
-                                                MaterialPageRoute(
-                                                    builder: (_) => PromoCode()),
-                                                    (Route<dynamic> route) => false);
-                                          }
-                                          setState(() {
-                                            _isLoading = false;
-                                          });
-                                          order.clearFields();
-                                          address.addressChoosen = AddressesModel();
-                                        }
-                                      },)
-
-                            );
-                            setState(() {
-                              _isLoading = false;
-                            });
-                          },
-                          child: Text("Place Order",
-                              style: TextStyle(
-                                color: yellowColor,
-                                fontFamily: 'BerlinSansFB',
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              )),
-                          style: ElevatedButton.styleFrom(
-                            primary: Color(0xFF333333),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 20, horizontal: 40),
-                            side:
-                            const BorderSide(color: Colors.black, width: 1),
-                            shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
-                            // backgroundColor: const Color(0xFF333333)),),
-                          ))),
-                ],
-              ),
+                                                PlacedOrder = await order
+                                                    .placeOrder(address
+                                                        .addressChoosen.id);
+                                                if (!PlacedOrder) {
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return AlertDialog(
+                                                          title: Text(order
+                                                              .messagePlaceOrder),
+                                                        );
+                                                      });
+                                                } else {
+                                                  Navigator.of(context)
+                                                      .pushAndRemoveUntil(
+                                                          MaterialPageRoute(
+                                                              builder: (_) =>
+                                                                  PromoCode()),
+                                                          (Route<dynamic>
+                                                                  route) =>
+                                                              false);
+                                                }
+                                                setState(() {
+                                                  _isLoading = false;
+                                                });
+                                                order.clearFields();
+                                                address.addressChoosen =
+                                                    AddressesModel();
+                                              }
+                                            },
+                                          ));
+                                  setState(() {
+                                    _isLoading = false;
+                                  });
+                                },
+                                child: Text("Place Order",
+                                    style: TextStyle(
+                                      color: yellowColor,
+                                      fontFamily: 'BerlinSansFB',
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    )),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Color(0xFF333333),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 20, horizontal: 40),
+                                  side: const BorderSide(
+                                      color: Colors.black, width: 1),
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  // backgroundColor: const Color(0xFF333333)),),
+                                ))),
+                      ],
+                    ),
             ],
           ),
         ),
