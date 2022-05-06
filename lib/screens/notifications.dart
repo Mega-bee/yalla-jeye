@@ -46,10 +46,12 @@ class _NotificationsState extends State<Notifications> {
                 height: 100,
                 child: InkWell(
                   onTap: () {
+                    print("ORDER  ID: ${noti.services[index].orderId}");
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) =>
-                            TabBarOrder(0, order.getOrder[index].id),
+
+                            TabBarOrder(0, noti.services[index].orderId),
                       ),
                     );
                   },
