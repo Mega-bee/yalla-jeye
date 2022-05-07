@@ -275,6 +275,7 @@ class _LocationPState extends State<LocationP> {
                                                                   route) =>
                                                               false);
                                                 }
+
                                                 setState(() {
                                                   _isLoading = false;
                                                 });
@@ -282,11 +283,13 @@ class _LocationPState extends State<LocationP> {
                                                 address.addressChoosen =
                                                     AddressesModel();
                                               }
+
                                             },
                                           ));
                                   setState(() {
                                     _isLoading = false;
                                   });
+
                                 },
                                 child: Text("Place Order",
                                     style: TextStyle(
