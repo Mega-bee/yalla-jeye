@@ -2,6 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:yallajeye/providers/user.dart';
+import 'package:yallajeye/widgets/custom_alert_dialog.dart';
 
 import '../constants/colors_textStyle.dart';
 import '../widgets/build_show-Dialog_logout.dart';
@@ -17,14 +21,25 @@ class _SettingsState extends State<Settings> {
   bool _prefsLoaded;
   final appBar = AppBar(
     title: Text('Settings'),
+    foregroundColor: yellowColor,
   );
 
   void initState() {
     _prefsLoaded = false;
     // getUser();
+    getData();
     super.initState();
-  }
 
+  }
+  bool isActive=false;
+  String email="";
+getData()async{
+    SharedPreferences prefs=await SharedPreferences.getInstance();
+    isActive= prefs.getBool("driverIsActive");
+   email= prefs.get("email");
+   setState(() {
+   });
+}
   // Future<void> getUser() async {
   //   _pefUser = await UserPreferences().getUser();
   //   print('email');
@@ -42,6 +57,7 @@ class _SettingsState extends State<Settings> {
         appBar.preferredSize.height -
         MediaQuery.of(context).padding.top;
     var qPortrait = MediaQuery.of(context).orientation;
+    final deliveryProv=Provider.of<UserProvider>(context);
 
     return Scaffold(
       appBar: appBar,
@@ -84,10 +100,7 @@ class _SettingsState extends State<Settings> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                !_prefsLoaded
-                                    ? Text('')
-                                    : Text(
-                                        "  _pefUser.email",
+                                 Text(email,
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontFamily: 'BerlinSansFB'),
@@ -117,13 +130,42 @@ class _SettingsState extends State<Settings> {
                                   activeTrackColor: Colors.greenAccent,
                                   inactiveThumbColor: Colors.white,
                                   inactiveTrackColor: Colors.redAccent,
-                                  value: valueOn,
+                                  value: isActive,
                                   onChanged:(value)
-                                  {
-                                    dooToggleActivity(value);
-                                    setState(() {
-                                      this.valueOn = value;
+                                  async{
+                                    showDialog(
+                                    barrierDismissible: false,context: context, builder: (context){
+                                      return AlertDialog(
+                                        title: Center(child: CircularProgressIndicator()),
+                                      );
                                     });
+                                  bool success=  await deliveryProv.toggleActivity();
+                                  Navigator.of(context).pop();
+                                    if(success){
+                                      SharedPreferences prefs=await SharedPreferences.getInstance();
+                                      setState(() {
+                                        isActive = value;
+                                      });
+                                      prefs.setBool("driverIsActive",value);
+                                    }else{
+                                    showDialog(context: context, builder: (context){
+                                      return AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(
+                                          15)),
+                                      title:const Text(
+                                      "Please try again later",
+                                      style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight:
+                                      FontWeight.bold,
+                                      fontFamily:
+                                      "BerlinSansFB"),
+                                      textAlign: TextAlign.center,
+                                      )
+                                      ) ;})  ;
+                                    }
                                   }
                                   ,
                                 ),

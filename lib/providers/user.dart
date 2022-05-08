@@ -9,6 +9,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yallajeye/Services/ApiLink.dart';
 import 'package:yallajeye/Services/ServiceAPi.dart';
+import 'package:yallajeye/models/driver/driver_orders.dart';
+import 'package:yallajeye/models/driver/order_details.dart';
 import '../models/user.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -191,6 +193,7 @@ class UserProvider with ChangeNotifier {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString("token", allData["data"]["data"]["token"]);
       prefs.setString("email", allData["data"]["data"]["email"]);
+
       prefs.setString('imageUrl', allData['data']['data']['imageUrl'] ?? "");
 
 
@@ -201,6 +204,8 @@ class UserProvider with ChangeNotifier {
           _status = Status.isVerified;
         }else{
           prefs.setString("role", "driver");
+          prefs.setString("driverId", allData["data"]["data"]["id"].toString());
+          prefs.setBool("driverIsActive", allData["data"]["data"]["isActive"]);
           _status = Status.isDriver;
         }
 
@@ -490,7 +495,97 @@ class UserProvider with ChangeNotifier {
 
 
   ///Driver Provider///
-toggleActivity(){
+toggleActivity()async{
+  allData=  await _serviceAPi.postAPi(ApiLink.setToggleActivity, [], {}, [], {}, false);
+  if (allData["error"] != null) {
+    print("${allData["error"]}");
+    message = allData["error"];
+    return false;
+  } else {
+    return true;
+  }
 
+}
+List<DriverOrder> _listOfDriverOrder=[];
+
+  List<DriverOrder> get listOfDriverOrder => _listOfDriverOrder;
+
+  set listOfDriverOrder(List<DriverOrder> value) {
+    _listOfDriverOrder = value;
+  }
+
+  getDriverOrders()async{
+    try{
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String id=prefs.getString("driverId");
+    allData=await  _serviceAPi.getAPi(ApiLink.getDriverOrders, [id], {});
+      if (allData["error"] != null) {
+        print("${allData["error"]}");
+        message = allData["error"];
+        listOfDriverOrder=[];
+        notifyListeners();
+        return false;
+      }else{
+        listOfDriverOrder=List<DriverOrder>.from(allData["data"].map((model)=> DriverOrder.fromJson(model)));
+        notifyListeners();
+        return true;
+      }
+    }catch(e){
+      listOfDriverOrder=[];
+      notifyListeners();
+      return false;
+    }
+
+}
+
+DriverOrderDetails _orderDetails=DriverOrderDetails();
+
+  DriverOrderDetails get orderDetails => _orderDetails;
+
+  set orderDetails(DriverOrderDetails value) {
+    _orderDetails = value;
+  }
+
+  getDriverOrderDetails(int orderId)async{
+    List<String> id=[];
+    id.add(orderId.toString());
+    allData=await _serviceAPi.getAPi(ApiLink.getDriverOrderDetails, id,
+        {});
+    if (allData["error"] != null) {
+      print("${allData["error"]}");
+      message = allData["error"];
+      orderDetails=DriverOrderDetails();
+    }else{
+      orderDetails=DriverOrderDetails.fromJson(allData['data']);
+    }
+    notifyListeners();
+}
+
+setDriverOrderStatus(int orderId,int statusId)async{
+    List<String> id=[];
+    id.add(orderId.toString());
+    id.add(statusId.toString());
+    allData=await _serviceAPi.postAPi(ApiLink.setDriverOrderStatus, id, {} , [], {}, false);
+    if (allData["error"] != null) {
+      print("${allData["error"]}");
+      message = allData["error"];
+      return false;
+    }else{
+      return true;
+    }
+}
+
+Future<bool> markItemAsDone(int id) async{
+    List<String> idList=[];
+    idList.add(id.toString());
+    allData=await _serviceAPi.postAPi(ApiLink.markItemAsDone, idList, {}, [],
+        {}, false);
+    if (allData["error"] != null) {
+      print("${allData["error"]}");
+      message = allData["error"];
+      return false;
+    }else{
+      return true;
+    }
 }
 }

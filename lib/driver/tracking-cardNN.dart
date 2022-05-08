@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yallajeye/constants/colors_textStyle.dart';
+import 'package:yallajeye/driver/order/order_details.dart';
+
+import '../providers/user.dart';
 
 class TrackingCardNN extends StatefulWidget {
   const TrackingCardNN({Key key}) : super(key: key);
@@ -12,84 +17,70 @@ class _TrackingCardNNState extends State<TrackingCardNN> {
   final appBar = AppBar(
     title: Text('Orders'),
   );
+  getData()async{
+    final driver=Provider.of<UserProvider>(context,listen:false);
+    await driver.getDriverOrders();
+  }
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {
+     final driver=Provider.of<UserProvider>(context);
+     final mediaQuery=MediaQuery.of(context).size;
     return Scaffold(
-      appBar: appBar,
-        body: button
+      appBar: AppBar(title: Image.asset(
+        'assets/images/logo.png',
+        height: 40,
+      ),),
+        body: driver.listOfDriverOrder.isEmpty
             ? Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      button = !button;
-                    });
-                    print(button);
-                  },
-                  child: Text('Start'),
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.fromLTRB(
-                        MediaQuery.of(context).size.height * 0.05,
-                        MediaQuery.of(context).size.height * 0.04,
-                        MediaQuery.of(context).size.height * 0.05,
-                        MediaQuery.of(context).size.height * 0.04),
-                    onPrimary: Color.fromRGBO(254, 212, 48, 1),
-                    primary: Color.fromRGBO(51, 51, 51, 1),
-                    shape: new RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(15.0),
-                    ),
-                  ),
-                ),
+                child: FittedBox(child: Text("No missions assigned!",style: TextStyle(fontFamily: "BerlinSansFB",fontSize: 40),)),
               )
-            : Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        print("Testttt");
-                      },
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        elevation: 5,
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
+            :
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: ListView.separated(
+                separatorBuilder: (context,index){
+                  return const SizedBox(height: 10,);
+                },
+                  itemCount: driver.listOfDriverOrder.length,
+                  itemBuilder: (context, index) {
+                return  InkWell(
+                  onTap: () {
+                   Navigator.of(context).push(MaterialPageRoute(builder: (_)=>OrderDetails(orderId:driver.listOfDriverOrder[index].id,)));
+                  },
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
+                    elevation: 5,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Location: zahle"),
+                              Text("${driver.listOfDriverOrder[index].userName}",style: TextStyle(fontFamily: "BerlinSansFB",fontSize: 15)),
                               SizedBox(
                                 height:
-                                    MediaQuery.of(context).size.height * 0.01,
+                                mediaQuery.height * 0.01,
                               ),
-                              Text("items: tawouk pepsi 5yar banadoura..."),
+                              Text("${driver.listOfDriverOrder[index].city}",style: TextStyle(fontFamily: "BerlinSansFB",fontSize: 15)),
                             ],
                           ),
-                        ),
+                          Text("${driver.listOfDriverOrder[index].orderStatus}",style: TextStyle(fontFamily: "BerlinSansFB",fontSize: 22,color: redColor))
+                        ],
                       ),
                     ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.04,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text('Next'),
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.fromLTRB(
-                            MediaQuery.of(context).size.height * 0.05,
-                            MediaQuery.of(context).size.height * 0.04,
-                            MediaQuery.of(context).size.height * 0.05,
-                            MediaQuery.of(context).size.height * 0.04),
-                        onPrimary: Color.fromRGBO(254, 212, 48, 1),
-                        primary: Color.fromRGBO(51, 51, 51, 1),
-                        shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(15.0),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ));
+                  ),
+                );
+              }),
+            ));
+
   }
 }
