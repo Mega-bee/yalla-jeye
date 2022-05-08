@@ -51,7 +51,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
             // const SizedBox(
             //   height: 10,
             // ),
-            Row(
+           Row(
               mainAxisAlignment:
               MainAxisAlignment
                   .spaceBetween,

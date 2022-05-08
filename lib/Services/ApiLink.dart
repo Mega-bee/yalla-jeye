@@ -28,4 +28,9 @@ class ApiLink {
   static String confirmOtp=host+"Accounts/ConfirmOtp";
   static String confirmAccountOtp=host+"Accounts/ConfirmAccount";
   static String resendOtp=host+"Accounts/ResendOtp";
+  static String getDriverOrders=host+"Driver/GetDriverOrders";
+  static String getDriverOrderDetails=host+"Driver/GetDriverOrder";
+  static String setToggleActivity=host+"Driver/ToggleActivity";
+  static String setDriverOrderStatus=host+"Driver/SetOrderStatus";
+  static String markItemAsDone=host+"Driver/MarkItemAsDone";
 }
