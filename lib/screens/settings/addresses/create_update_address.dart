@@ -190,6 +190,7 @@ class _CreateAddressState extends State<CreateAddress> {
                                               address.cityChoosen=address.listcity[0];
                                               setState(() {});
                                             }
+                                            Navigator.of(context).pop();
                                           }), Expanded(
                                             child: CupertinoPicker(
                                               backgroundColor: Colors.white,
