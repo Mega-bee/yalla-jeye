@@ -13,7 +13,7 @@ class TabBarOrder extends StatefulWidget {
   final int numTab;
   final int id;
 
-   const TabBarOrder(this.numTab,this.id);
+   const TabBarOrder({this.numTab,this.id});
 
 
   @override
@@ -47,18 +47,6 @@ if(status.isGranted){
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-      //   actions: [
-      //   Row(
-      //     children: [
-      //       IconButton(onPressed: (){
-      //         Navigator.of(context).push(MaterialPageRoute(builder: (_)=>TestAudio()));
-      //       }, icon: Icon(Icons.add)),
-      //       IconButton(onPressed: ()async{
-      //         await Permission.microphone.request();
-      //       }, icon: Icon(Icons.mic,color: yellowColor,)),
-      //     ],
-      //   )
-      // ]
         title: Image.asset(
         'assets/images/logo.png',
         height: 40,
@@ -69,7 +57,7 @@ if(status.isGranted){
       order.loadingId ?
       Center(child: CircularProgressIndicator(),):
 
-      order.orderByIdModel.tracking?
+      order.orderByIdModel.orderStatusId==3?
       DefaultTabController(length: 1,
         initialIndex: widget.numTab, child: Column(
           children: [
@@ -153,7 +141,7 @@ if(status.isGranted){
             )
           ],
         ),
-        
+
       ),),
     );
   }
