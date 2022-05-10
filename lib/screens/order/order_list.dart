@@ -373,7 +373,7 @@ class _OrderListState extends State<OrderList> {
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (_) => TabBarOrder(
-                                      0, order.getOrder[index].id)));
+                                     numTab: 0, id:order.getOrder[index].id)));
                               // Navigator.of(context)
                               //     .push(MaterialPageRoute(
                               //   builder: (_) => TABBar(

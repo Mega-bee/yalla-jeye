@@ -52,7 +52,7 @@ class _NotificationsState extends State<Notifications> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) => TabBarOrder(
-                                    0, noti.services[index].orderId),
+                                   numTab: 0, id: noti.services[index].orderId),
                               ),
                             );
                           },

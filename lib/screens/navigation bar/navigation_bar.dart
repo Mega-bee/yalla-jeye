@@ -51,19 +51,25 @@ class _NavigationState extends State<Navigation> {
     super.initState();
   }
   void _handleNotificationsListeners() {
+
 //to navigate when it is in background or terminated
     FirebaseMessaging.instance
         .getInitialMessage()
         .then((RemoteMessage message) {
       if (message != null) {
+        print("First message${message}");
+        int id = int.parse(message.data["orderId"].toString());
         // demo data
-        Navigator.of(context).push(MaterialPageRoute(builder: (_)=>TabBarOrder(0, 333)));
+        Navigator.of(context).push(MaterialPageRoute(builder: (_)=>TabBarOrder(numTab: 0, id:id)));
       }
     }
     );
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print("second message${message.data}");
+
       // demo data
-      Navigator.of(context).push(MaterialPageRoute(builder: (_)=>TabBarOrder(0, 333)));
+      int id = int.parse(message.data["orderId"].toString());
+      Navigator.of(context).push(MaterialPageRoute(builder: (_)=>TabBarOrder(numTab: 0, id: id)));
       print('A new onMessageOpenedApp event was published!');
     });
 
