@@ -250,9 +250,12 @@ class _LocationPState extends State<LocationP> {
                                                     toastLength:
                                                         Toast.LENGTH_SHORT);
                                               } else {
+
                                                 setState(() {
                                                   _isLoading = true;
                                                 });
+                                                // Navigator.of(context).pop();
+
                                                 PlacedOrder = await order
                                                     .placeOrder(address
                                                         .addressChoosen.id);
@@ -283,13 +286,11 @@ class _LocationPState extends State<LocationP> {
                                                 address.addressChoosen =
                                                     AddressesModel();
                                               }
-
                                             },
                                           ));
                                   setState(() {
                                     _isLoading = false;
                                   });
-
                                 },
                                 child: Text("Place Order",
                                     style: TextStyle(

@@ -38,9 +38,7 @@ class _PromoCodeState extends State<PromoCode> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          leading: IconButton(onPressed: (){
-            Navigator.pop(context);
-          }, icon: Icon(Icons.arrow_back)),
+
           automaticallyImplyLeading: false,
           title: Text(
             "Order Created",
