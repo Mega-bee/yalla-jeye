@@ -1,131 +1,154 @@
-import 'dart:async';import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'dart:async';
+import 'dart:math';
+import 'package:feature_discovery/feature_discovery.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 import '../../constants/colors_textStyle.dart';
 
-
 class LocationMap extends StatefulWidget {
-
-
   @override
-
   LocationMapState createState() => LocationMapState();
 }
 
 class LocationMapState extends State<LocationMap> {
+  GoogleMapController googleMapController;
+  Set<Marker> _markers = {};
+  LatLng _addresPotion;
+  LatLng zahahLat = LatLng(33.8463,
+      35.9020); //initial currentPosition values cannot assign null values
+  // static const LatLng _center = const LatLng(45.521563, -122.677433);
+  // Location currentLocation = Location();
 
-    GoogleMapController googleMapController;
 
-  static const LatLng _center = const LatLng(45.521563, -122.677433);
-  Location currentLocation = Location();
+  @override
+  void initState() {
+    // TODO: implement initState
+    defaultLocation();
+    // SchedulerBinding.instance?.addPostFrameCallback((Duration duration) async {
+    //   await Future.delayed(Duration(seconds: 10)).whenComplete(() {
+    //     FeatureDiscovery.discoverFeatures(
+    //       context,
+    //       const <String>{
+    //         'myLocation',
+    //         'selectedMenu',
+    //       },
+    //     );
+    //   });
+    // });
+    super.initState();
+  }
 
-  // void getLocation() async{
-  //   final c = await _controller.future;
-  //   var location = await currentLocation.getLocation();
-  //   currentLocation.onLocationChanged.listen((LocationData loc){
-  //
-  //     c.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
-  //       target: LatLng(loc.latitude ?? 0.0,loc.longitude?? 0.0),
-  //       zoom: 12.0,
-  //     )));
-  //     print(loc.latitude);
-  //     print(loc.longitude);
-  //     setState(() {
-  //       _markers.add(Marker(markerId: MarkerId('Home'),
-  //           position: LatLng(loc.latitude ?? 0.0, loc.longitude ?? 0.0)
-  //       ));
-  //     });
-  //   });
+  void _onMapCreated(GoogleMapController controller) {}
+  MapType _currentMapType = MapType.normal;
+
+  // LatLng _lastMapPosition = _center;
+
+  // void _onCameraMove(CameraPosition position) {
+  //   _lastMapPosition = position.target;
   // }
 
-  void _onMapCreated(GoogleMapController controller) {
-
-  }
-  MapType _currentMapType = MapType.normal;
-  final Set<Marker> _markers = {};
-  LatLng _lastMapPosition = _center;
-
-  void _onCameraMove(CameraPosition position) {
-    _lastMapPosition = position.target;
-  }
-
   void _onMapTypeButtonPressed() {
-
     setState(() {
       _currentMapType = _currentMapType == MapType.normal
           ? MapType.satellite
           : MapType.normal;
     });
   }
-  LatLng currentLatLng = LatLng(
-      33.8463, 35.9020); //initial currentPosition values cannot assign null values
+
+
 
   bool loading = false;
 
+  void defaultLocation() async {
+    Location location = new Location();
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    LocationData _locationData;
 
-Future<Position> _determinePosition() async {
-    bool serviceEnable;
-    LocationPermission permission;
-    serviceEnable = await Geolocator.isLocationServiceEnabled();
-
-    if (!serviceEnable) {
-      return Future.error('Location Are Disable');
-    }
-    permission =await Geolocator.checkPermission();
-    if(permission ==LocationPermission.denied){
-      permission = await Geolocator.requestPermission();
-      if (permission ==LocationPermission.denied){
-        return Future.error('Location Permission Denied');
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return null;
       }
     }
-   if (permission ==LocationPermission.deniedForever){
-     return Future.error('Location Permission Are Permanently Denied');
-   }
-   Position position = await Geolocator.getCurrentPosition();
-   return position;
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return null;
+      }
     }
+    var myLocation = await Location.instance.getLocation();
+    LatLng myPos = LatLng(myLocation.latitude ?? 0, myLocation.longitude ?? 0);
+    if(myPos != null){
+      _addresPotion = myPos;
+    }else{
+      _addresPotion = zahahLat;
+    }
+    _markers.removeAll(_markers);
+    _markers.add(Marker(markerId: MarkerId('Default'),
+      position: _addresPotion,
+      infoWindow: InfoWindow(
+        title: 'Really cool place',
+        snippet: '5 Star Rating',
+      ),
+      icon: BitmapDescriptor.defaultMarker,
+    ));
 
+setState(() {
 
-  void _onAddMarkerButtonPressed() {
-    setState(() {
-      _markers.add(Marker(
-        // This marker id can be anything that uniquely identifies each marker.
-        markerId: MarkerId(_lastMapPosition.toString()),
-        position: _lastMapPosition,
-        infoWindow: InfoWindow(
-          title: 'Really cool place',
-          snippet: '5 Star Rating',
-        ),
-        icon: BitmapDescriptor.defaultMarker,
-      ));
-    });
+});
   }
+
+  // void _onAddMarkerButtonPressed() {
+  //   setState(() {
+  //     _markers.add(Marker(
+  //       // This marker id can be anything that uniquely identifies each marker.
+  //       markerId: MarkerId(myPos.toString()),
+  //       position: myPos,
+  //       infoWindow: InfoWindow(
+  //         title: 'Really cool place',
+  //         snippet: '5 Star Rating',
+  //       ),
+  //       icon: BitmapDescriptor.defaultMarker,
+  //     ));
+  //   });
+  // }
+
   @override
-
   Widget build(BuildContext context) {
-
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
       home: Scaffold(
-
         appBar: AppBar(
           title: Text('Map'),
           leading: IconButton(
-            onPressed: (){Navigator.pop(context);},
+            onPressed: () {
+              Navigator.pop(context);
+            },
             icon: Icon(Icons.arrow_back),
-
           ),
-          backgroundColor:redColor,
+          backgroundColor: redColor,
         ),
         body: Stack(
           children: <Widget>[
             GoogleMap(
-              onCameraMove: _onCameraMove,
+              // onCameraMove: _onCameraMove,
               markers: _markers,
+              onTap: (poti){
+                _markers.removeAll(_markers);
+                _markers.add(Marker(markerId: MarkerId('selected'),position: poti , icon: BitmapDescriptor.defaultMarker,));
+                _addresPotion=poti;
+                setState(() {
+
+                });
+              },
               myLocationEnabled: true,
               mapType: _currentMapType,
               buildingsEnabled: true,
@@ -134,62 +157,49 @@ Future<Position> _determinePosition() async {
               myLocationButtonEnabled: false,
               onMapCreated: _onMapCreated,
               initialCameraPosition:
+                  CameraPosition(target: zahahLat, zoom: 10.2),
 
-              CameraPosition(target: currentLatLng,zoom: 10.2),
-
-
-              ),
-
+            ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Align(
                 alignment: Alignment.topRight,
-                child: Column(
-                  children:[
-                    FloatingActionButton(
+                child: Column(children: [
+                  FloatingActionButton(
                     onPressed: () => _onMapTypeButtonPressed(),
                     materialTapTargetSize: MaterialTapTargetSize.padded,
-                    backgroundColor:redColor,
+                    backgroundColor: redColor,
                     child: const Icon(Icons.map, size: 30.0),
                   ),
-                    SizedBox(height: 12,),
-                    FloatingActionButton(
-                      onPressed: _onAddMarkerButtonPressed,
-                      materialTapTargetSize: MaterialTapTargetSize.padded,
-                      backgroundColor:redColor,
-                      child: const Icon(Icons.add_location, size: 30.0),
-                    ),
-                    SizedBox(height: 12,),
-                    // FloatingActionButton(
-                    //   onPressed: () async{
-                    //     Position position = await _determinePosition();
-                    //     googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(
-                    //       position.latitude,position.longitude,
-                    //     ),zoom: 10,
-                    //     )));
-                    //     _markers.clear();
-                    //     _markers.add(Marker(markerId: MarkerId('Current Location'),position:LatLng(position.latitude,position.longitude,),
-                    //     ));
-                    //     setState(() {
-                    //
-                    //     });
-                    //   },
-                    //   materialTapTargetSize: MaterialTapTargetSize.padded,
-                    //   backgroundColor:redColor,
-                    //   child: const Icon(Icons.add, size: 30.0),
-                    // ),
+                  SizedBox(
+                    height: 12,
+                  ),
+                  // FloatingActionButton(
+                  //   onPressed: null,
+                  //   materialTapTargetSize: MaterialTapTargetSize.padded,
+                  //   backgroundColor: redColor,
+                  //   child: const Icon(Icons.add_location, size: 30.0),
+                  // ),
+                  // SizedBox(
+                  //   height: 12,
+                  // ),
+                  FloatingActionButton(
+                    onPressed: () async{
+    defaultLocation();},
+                    child: const Icon(Icons.add, size: 30.0)),
 
-            //         FloatingActionButton(
-            // child: Icon(Icons.location_searching,color: Colors.white,),
-            // onPressed: (){
-            //   getLocation();
-            // },)
+
+                  //         FloatingActionButton(
+                  // child: Icon(Icons.location_searching,color: Colors.white,),
+                  // onPressed: (){
+                  //
+                  // },)
                 ]),
               ),
             ),
-            Align(
-                alignment: Alignment.center,
-                // child: !loadingconf?
+            // Align(
+            //     alignment: Alignment.center,
+            //     // child: !loadingconf?
                 // InkWell(
                 //
                 //     onTap: () async {
@@ -201,31 +211,30 @@ Future<Position> _determinePosition() async {
                 //         loadingconf==false;
                 //       });
                 //     },
-                    child: Icon(
-                      Icons.place,
-                      size: 20,
-                      color: redColor,
-                    ))
-
+                // child: Icon(
+                //   Icons.dot,
+                //   size: 20,
+                //   color: redColor,
+                // ))
           ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: FloatingActionButton.extended(
-
           backgroundColor: redColor,
-          
-
-          shape:  RoundedRectangleBorder(
+          shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),
-              side: BorderSide(width: 1,color: yellowColor)),
+              side: BorderSide(width: 1, color: yellowColor)),
           elevation: 2,
-           label:Text("Confirm Location",style: TextStyle(fontSize: 10),),
-          onPressed: (){
-            Navigator.pop(context);
+          label: Text(
+            "Confirm Location",
+            style: TextStyle(fontSize: 10),
+          ),
+          onPressed: () {
+
+            Navigator.pop(context,_addresPotion);
           },
         ),
       ),
     );
-
   }
 }

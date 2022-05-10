@@ -4,10 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:yallajeye/constants/colors_textStyle.dart';
 import 'package:yallajeye/models/getAllCities.dart';
 import 'package:yallajeye/providers/address.dart';
+
+import '../../order/location.dart';
 
 class CreateAddress extends StatefulWidget {
   @override
@@ -16,7 +19,7 @@ class CreateAddress extends StatefulWidget {
 
 class _CreateAddressState extends State<CreateAddress> {
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
-
+bool locationSelected=false;
   void validate() {
     if (formkey.currentState.validate()) {
       // ignore: avoid_print
@@ -226,17 +229,17 @@ class _CreateAddressState extends State<CreateAddress> {
 
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      address.cityChoosen.location.isEmpty? const Text("Cities",style:  TextStyle(
+                                      const Text("Your Location",style:  TextStyle(
                                         fontSize: 15,
                                         fontFamily: 'BerlinSansFB',
                                         fontWeight: FontWeight.w600,
-                                        color: Color.fromRGBO(135, 135, 135, 1),
-                                      ),):Text(address.cityChoosen.location,style: const TextStyle(
-                                        fontSize: 15,
-                                        fontFamily: 'BerlinSansFB',
-                                        fontWeight: FontWeight.w600,
-                                        color: Color.fromRGBO(135, 135, 135, 1),)),
-                                      Icon(FontAwesomeIcons.caretDown, color: Color.fromRGBO(135, 135, 135, 1),)
+                                        color: Color.fromRGBO(135, 135, 135, 1),),)
+                                      // ),):Text(address.cityChoosen.location,style: const TextStyle(
+                                      //   fontSize: 15,
+                                      //   fontFamily: 'BerlinSansFB',
+                                      //   fontWeight: FontWeight.w600,
+                                      //   color: Color.fromRGBO(135, 135, 135, 1),)),
+                                      // Icon(FontAwesomeIcons.caretDown, color: Color.fromRGBO(135, 135, 135, 1),)
                                     ],
                                   ),
                                 ),
@@ -383,6 +386,43 @@ class _CreateAddressState extends State<CreateAddress> {
                                     return null;
                                   }
                                 },
+                              ),
+                              SizedBox(height: 10,),
+                              GestureDetector(
+                                onTap: () {
+                                  address.isCreateAddress = true;
+
+                                  Navigator.of(context)
+                                      .push(MaterialPageRoute(builder: (_) => LocationMap())).then((value) {
+                                        if(value != null){
+                                          value as LatLng;
+                                          address.setlocation(value);
+                                          locationSelected = true;
+                                          setState(() {
+
+                                          });
+                                        }
+
+                                  });
+    },
+                                child: Card(
+                                  elevation: 1,
+                                  shape: BeveledRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                  child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                                    children:[
+                                      !locationSelected ?    Text("Do You Want To Use Google Map ?",style: TextStyle(fontSize: 15,
+                                        fontFamily: 'BerlinSansFB',
+                                        fontWeight: FontWeight.w600,
+                                        color: Color.fromRGBO(135, 135, 135, 1),),)
+                                     : Text("Location selected successfully ",style: TextStyle(fontSize: 15,
+                                        fontFamily: 'BerlinSansFB',
+                                        fontWeight: FontWeight.w600,
+                                        color: Color.fromRGBO(135, 135, 135, 1),),),
+                                      IconButton(onPressed: (){}, icon: Icon(Icons.map_sharp,color: Colors.green,)),
+                                  ]),
+                                ),
                               ),
                               //description
                               Flexible(

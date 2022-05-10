@@ -11,6 +11,7 @@ import 'package:yallajeye/screens/settings/addresses/create_update_address.dart'
 import 'package:yallajeye/widgets/address_card.dart';
 import 'package:yallajeye/widgets/custom_alert_dialog.dart';
 import '../../providers/address.dart';
+import 'adresses.dart';
 import 'location.dart';
 
 class LocationP extends StatefulWidget {
@@ -63,7 +64,7 @@ class _LocationPState extends State<LocationP> {
               onPressed: () {
                 address.isCreateAddress = true;
                 Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (_) => LocationMap()));
+                    .push(MaterialPageRoute(builder: (_) => CreateAddress()));
               },
               icon: Icon(Icons.add))
         ],

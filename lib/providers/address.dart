@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:yallajeye/Services/Addresses.dart';
 import 'package:yallajeye/Services/ApiLink.dart';
 import 'package:yallajeye/Services/ServiceAPi.dart';
@@ -95,9 +96,7 @@ class AddressProvider extends ChangeNotifier {
   TextEditingController floor = TextEditingController();
   TextEditingController description = TextEditingController();
   TextEditingController street = TextEditingController();
-
-  // TextEditingController cityId = TextEditingController();
-
+  LatLng _location;
 
   clearFields() {
     addresstitle.clear();
@@ -117,7 +116,9 @@ class AddressProvider extends ChangeNotifier {
       'cityId': cityChoosen.id.toString(),
       'street': street.text,
       'buildingName': buildingName.text,
-      'floorNumber': floor.text
+      'floorNumber': floor.text,
+      'latitude':_location.latitude.toString(),
+      'longitude':_location.longitude.toString(),
     },[], {}, false);
     if (allData["error"] != null) {
       return allData["error"];
@@ -184,5 +185,9 @@ loading=false;
       cityLoading=false;
     notifyListeners();
     }
+
+  void setlocation(value) {
+    _location = value;
+  }
 
 }
