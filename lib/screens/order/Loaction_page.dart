@@ -11,6 +11,7 @@ import 'package:yallajeye/screens/settings/addresses/create_update_address.dart'
 import 'package:yallajeye/widgets/address_card.dart';
 import 'package:yallajeye/widgets/custom_alert_dialog.dart';
 import '../../providers/address.dart';
+import '../../widgets/custom_alert_dialog_Peter.dart';
 import 'adresses.dart';
 import 'location.dart';
 
@@ -230,7 +231,8 @@ class _LocationPState extends State<LocationP> {
                                   });
                                   showDialog(
                                       context: context,
-                                      builder: (context) => CustomAlertDialog(
+                                      builder: (context) => CustomAlertDialogPeter(
+
                                             title:
                                                 "Are you sure  you want to order? You can't change the order later",
                                             content: "",

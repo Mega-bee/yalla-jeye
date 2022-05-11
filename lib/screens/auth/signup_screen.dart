@@ -577,58 +577,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         toastLength: Toast.LENGTH_SHORT);
                                   }
 
-                                  // if(agree){
-                                  //   setState(() {
-                                  //     isLoading = true;
-                                  //   });
-                                  //   if (formkey.currentState.validate() == false) {
-                                  //     // ignore: avoid_print
-                                  //     print('Not Validated');
-                                  //     setState(() {
-                                  //       isLoading = false;
-                                  //     });
-                                  //     // reset!=null?
-                                  //   } else {
-                                  //     if (await authProvider.NextSignUpNew()) {
-                                  //       setState(() {
-                                  //         isLoading = false;
-                                  //       });
-                                  //       Navigator.push(
-                                  //         context,
-                                  //         MaterialPageRoute(
-                                  //           builder: (context) => ProfileScreen(
-                                  //             email: email,
-                                  //             password: password,
-                                  //             confirmPassword: confirmPassword,
-                                  //           ),
-                                  //         ),
-                                  //       );
-                                  //     } else {
-                                  //       setState(() {
-                                  //         isLoading = false;
-                                  //       });
-                                  //
-                                  //       Fluttertoast.showToast(
-                                  //           msg: "${authProvider.message}",
-                                  //           fontSize: 15,
-                                  //           gravity: ToastGravity.BOTTOM,
-                                  //           timeInSecForIosWeb: 2,
-                                  //           textColor: Colors.white,
-                                  //           backgroundColor: redColor,
-                                  //           toastLength: Toast.LENGTH_SHORT);
-                                  //       authProvider.messageNextSignUp = "";
-                                  //     }
-                                  //   }
-                                  // }else{
-                                  //   Fluttertoast.showToast(
-                                  //       msg: "Please agree our terms",
-                                  //       fontSize: 15,
-                                  //       gravity: ToastGravity.BOTTOM,
-                                  //       timeInSecForIosWeb: 2,
-                                  //       textColor: Colors.white,
-                                  //       backgroundColor: redColor,
-                                  //       toastLength: Toast.LENGTH_SHORT);
-                                  // }
                                 } },
                               child: Text('Next'),
                               style: ElevatedButton.styleFrom(
