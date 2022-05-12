@@ -317,6 +317,7 @@ class _LocationPState extends State<LocationP> {
     );
   }
   void navToPromoCode(){
+
     Navigator.push(context, MaterialPageRoute(
         builder: (_) =>
             PromoCode()));
