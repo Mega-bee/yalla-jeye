@@ -184,9 +184,10 @@ setState(() {
                   //   height: 12,
                   // ),
                   FloatingActionButton(
+                    backgroundColor:redColor ,
                     onPressed: () async{
     defaultLocation();},
-                    child: const Icon(Icons.add, size: 30.0)),
+                    child: const Icon(Icons.location_searching, size: 30.0 ,)),
 
 
                   //         FloatingActionButton(

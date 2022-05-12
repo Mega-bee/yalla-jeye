@@ -154,7 +154,7 @@ bool locationSelected=false;
                                   ),
                                   contentPadding: EdgeInsets.only(
                                       left: screenHeight * 0.02,
-                                      bottom: screenHeight * 0.03,
+                                      bottom: screenHeight * 0.01,
                                       top: screenHeight * 0.03),
                                   hintText: 'Adress title',
                                   hintStyle: const TextStyle(
@@ -229,17 +229,18 @@ bool locationSelected=false;
 
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Text("Your Location",style:  TextStyle(
+                                      address.cityChoosen.location.isEmpty?
+                                      const Text("Cities",style:  TextStyle(
                                         fontSize: 15,
                                         fontFamily: 'BerlinSansFB',
                                         fontWeight: FontWeight.w600,
-                                        color: Color.fromRGBO(135, 135, 135, 1),),)
-                                      // ),):Text(address.cityChoosen.location,style: const TextStyle(
-                                      //   fontSize: 15,
-                                      //   fontFamily: 'BerlinSansFB',
-                                      //   fontWeight: FontWeight.w600,
-                                      //   color: Color.fromRGBO(135, 135, 135, 1),)),
-                                      // Icon(FontAwesomeIcons.caretDown, color: Color.fromRGBO(135, 135, 135, 1),)
+                                        color: Color.fromRGBO(135, 135, 135, 1),
+                                      ),):Text(address.cityChoosen.location,style: const TextStyle(
+                                        fontSize: 15,
+                                        fontFamily: 'BerlinSansFB',
+                                        fontWeight: FontWeight.w600,
+                                        color: Color.fromRGBO(135, 135, 135, 1),)),
+                                      Icon(FontAwesomeIcons.caretDown, color: Color.fromRGBO(135, 135, 135, 1),)
                                     ],
                                   ),
                                 ),
@@ -406,22 +407,27 @@ bool locationSelected=false;
                                   });
     },
                                 child: Card(
+                                  shadowColor: Colors.transparent,
                                   elevation: 1,
+                                  color: Colors.white,
                                   shape: BeveledRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(5.0),
                                 ),
-                                  child: Row(mainAxisAlignment: MainAxisAlignment.center,
-                                    children:[
-                                      !locationSelected ?    Text("Do You Want To Use Google Map ?",style: TextStyle(fontSize: 15,
-                                        fontFamily: 'BerlinSansFB',
-                                        fontWeight: FontWeight.w600,
-                                        color: Color.fromRGBO(135, 135, 135, 1),),)
-                                     : Text("Location selected successfully ",style: TextStyle(fontSize: 15,
-                                        fontFamily: 'BerlinSansFB',
-                                        fontWeight: FontWeight.w600,
-                                        color: Color.fromRGBO(135, 135, 135, 1),),),
-                                      IconButton(onPressed: (){}, icon: Icon(Icons.map_sharp,color: Colors.green,)),
-                                  ]),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 15.0,right: 10,top: 3,bottom: 3),
+                                    child: Row(mainAxisAlignment: MainAxisAlignment.start,
+                                      children:[
+                                        !locationSelected ?    Text("Do You Want To Use Google Map ?",style: TextStyle(fontSize: 15,
+                                          fontFamily: 'BerlinSansFB',
+                                          fontWeight: FontWeight.w600,
+                                          color: Color.fromRGBO(135, 135, 135, 1),),)
+                                       : Text("Location selected successfully ",style: TextStyle(fontSize: 15,
+                                          fontFamily: 'BerlinSansFB',
+                                          fontWeight: FontWeight.w600,
+                                          color: Color.fromRGBO(135, 135, 135, 1),),),
+                                        IconButton(onPressed: (){}, icon: Icon(Icons.map_sharp,color: redColor,)),
+                                    ]),
+                                  ),
                                 ),
                               ),
                               //description
