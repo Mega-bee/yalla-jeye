@@ -237,8 +237,10 @@ class _LocationPState extends State<LocationP> {
                                                 "Are you sure  you want to order? You can't change the order later",
                                             content: "",
                                             cancelBtnFn: () =>
-                                                Navigator.pop(context, false),
+                                          Navigator.pop(context, false),
                                             confrimBtnFn: () async {
+                                              print("Loadingg");
+
                                               if (address.addressChoosen.id ==
                                                   0) {
                                                 Fluttertoast.showToast(
@@ -253,7 +255,6 @@ class _LocationPState extends State<LocationP> {
                                                     toastLength:
                                                         Toast.LENGTH_SHORT);
                                               } else {
-
                                                 setState(() {
                                                   _isLoading = true;
                                                 });
@@ -262,6 +263,11 @@ class _LocationPState extends State<LocationP> {
                                                 PlacedOrder = await order
                                                     .placeOrder(address
                                                         .addressChoosen.id);
+
+    if (mounted) {
+    setState(() {
+    _isLoading = false;
+    });
                                                 if (!PlacedOrder) {
                                                   showDialog(
                                                       context: context,
@@ -272,28 +278,17 @@ class _LocationPState extends State<LocationP> {
                                                         );
                                                       });
                                                 } else {
-                                                  Navigator.of(context)
-                                                      .pushAndRemoveUntil(
-                                                          MaterialPageRoute(
-                                                              builder: (_) =>
-                                                                  PromoCode()),
-                                                          (Route<dynamic>
-                                                                  route) =>
-                                                              false);
-                                                }
+                                             navToPromoCode();
+                                                }}
 
-                                                setState(() {
-                                                  _isLoading = false;
-                                                });
+
                                                 order.clearFields();
                                                 address.addressChoosen =
                                                     AddressesModel();
                                               }
                                             },
                                           ));
-                                  setState(() {
-                                    _isLoading = false;
-                                  });
+
                                 },
                                 child: Text("Place Order",
                                     style: TextStyle(
@@ -320,5 +315,11 @@ class _LocationPState extends State<LocationP> {
         ),
       ),
     );
+  }
+  void navToPromoCode(){
+
+    Navigator.push(context, MaterialPageRoute(
+        builder: (_) =>
+            PromoCode()));
   }
 }
