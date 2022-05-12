@@ -39,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     AdsDetails(ads.title, ads.description, ads.imageUrl)));
           },
           child: Card(
+
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(20),
@@ -48,16 +49,16 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: mediaQueryHeight * 0.3,
+                  height: mediaQueryHeight * 0.25,
                   child: Image.network(
                     ads.imageUrl,
                     height:
-                    MediaQuery.of(context).size.height * 0.1,
+                    MediaQuery.of(context).size.height * 0.25,
                     width: double.infinity,
                     errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
                       return Image.asset('assets/images/logo.png',
                         height:
-                        MediaQuery.of(context).size.height * 0.1,
+                        MediaQuery.of(context).size.height * 0.25,
                       );
                     },
                   ),
@@ -85,8 +86,8 @@ class _HomeScreenState extends State<HomeScreen> {
           effect: const ScrollingDotsEffect(
             activeDotColor: redColor,
             dotColor: yellowColor,
-            dotHeight: 10,
-            dotWidth: 10,
+            dotHeight: 5,
+            dotWidth: 5,
           ),
         );
     Widget buildIndicator2() => AnimatedSmoothIndicator(
@@ -95,8 +96,8 @@ class _HomeScreenState extends State<HomeScreen> {
           effect: const ScrollingDotsEffect(
             activeDotColor: redColor,
             dotColor: yellowColor,
-            dotHeight: 10,
-            dotWidth: 10,
+            dotHeight: 5,
+            dotWidth: 5,
           ),
         );
     return Scaffold(
@@ -127,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   activeIndex1 = index;
                                 }),
                                 autoPlay: true,
-                                height: mediaQueryHeight * 0.35,
+                                height: mediaQueryHeight * 0.32,
                                 autoPlayCurve: Curves.fastOutSlowIn,
                                 enableInfiniteScroll: true,
                                 autoPlayAnimationDuration:
@@ -164,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   this.activeIndex2 = index;
                                 }),
                                 autoPlay: true,
-                                height: mediaQueryHeight * 0.35,
+                                height: mediaQueryHeight * 0.32,
                                 autoPlayCurve: Curves.fastOutSlowIn,
                                 enableInfiniteScroll: true,
                                 autoPlayAnimationDuration:

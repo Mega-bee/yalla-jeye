@@ -27,7 +27,16 @@ class _OrderDetailsState extends State<OrderDetails> {
       const TextStyle(fontFamily: "BerlinSansFB", fontSize: 15);
   TextStyle textStyleTitle = const TextStyle(
       fontFamily: "BerlinSansFB", fontSize: 20, color: Color(0xffA2A2A2));
+  getMap() async {
+    final driver = Provider.of<UserProvider>(context, listen: false);
 
+    if (driver.orderDetails.address.longitude != null &&
+        driver.orderDetails.address.latitude != null) {
+      map = true;
+    } else {
+      map = false;
+    }
+  }
   getData() async {
     final driver = Provider.of<UserProvider>(context, listen: false);
     await driver.getDriverOrderDetails(widget.orderId);
@@ -52,10 +61,12 @@ class _OrderDetailsState extends State<OrderDetails> {
   void initState() {
     super.initState();
     getData();
+    getMap();
   }
 
   bool loading = true;
   bool checkBox = false;
+  bool map=false;
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +116,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                               "Location: ${driver.orderDetails.address.title}",
                               style: textStyle15,
                             ),
+                            map?
                             ElevatedButton(
                               onPressed: () async {
                                 // Here we are supplying the variables that we've created above
@@ -127,7 +139,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                 "Direction",
                                 style: TextStyle(fontSize: 11),
                               ),
-                            ),
+                            ):Container()
                           ],
                         ),
                         Text(
