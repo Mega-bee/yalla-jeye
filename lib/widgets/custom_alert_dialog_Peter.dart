@@ -7,7 +7,7 @@ class CustomAlertDialogPeter extends StatefulWidget {
   final String title;
   final String content;
  final Function cancelBtnFn;
- final Function confrimBtnFn;
+ final Function() confrimBtnFn;
 
   CustomAlertDialogPeter({
  @required this.title,@required this.content,@required this.cancelBtnFn,@required this.confrimBtnFn});
@@ -74,7 +74,7 @@ class _CustomAlertDialogPeter extends State<CustomAlertDialogPeter> {
                 TextButton(
                     onPressed: (){
                       Navigator.pop(context);
-                      widget.confrimBtnFn;
+                      widget.confrimBtnFn();
 
                     },
                     child:const Text(
