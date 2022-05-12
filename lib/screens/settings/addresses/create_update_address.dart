@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -444,8 +445,15 @@ bool locationSelected=false;
                                           onPressed: () async {
 
                                             if (!formkey.currentState
-                                                .validate()) {
-                                              return;
+                                                .validate() || locationSelected == false) {
+                                              return  Fluttertoast.showToast(
+                                                  msg:  "Please fill all field and choose your location",
+                                                  fontSize: 15,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  timeInSecForIosWeb: 2,
+                                                  textColor: Colors.white,
+                                                  backgroundColor: redColor,
+                                                  toastLength: Toast.LENGTH_SHORT);;
                                             } else {
                                               setState(() {
                                                 _isLoading = true;
