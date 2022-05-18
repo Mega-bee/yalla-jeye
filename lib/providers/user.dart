@@ -236,6 +236,7 @@ class UserProvider with ChangeNotifier {
         'Birthdate': birthday.text.toString(),
         'DeviceToken': tokenFire ?? ""
       }, imageList, {}, false);
+      print("requseee" '$allData');
       if (allData["error"] != null) {
 
         print("${allData["error"]}");

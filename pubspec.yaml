@@ -32,7 +32,7 @@ dependencies:
   provider:
   shared_preferences:
   http:
-  google_maps_flutter:
+  google_maps_flutter: ^2.1.1
   geolocator:
   geocoding:
   location:
@@ -44,7 +44,7 @@ dependencies:
   path:
   intl:
   flutter_svg: ^0.20.0-nullsafety.3
-  cached_network_image:
+#  cached_network_image:
   webview_flutter:
   multiselect_formfield: ^0.1.7
   carousel_slider: ^4.0.0-nullsafety.0
@@ -70,6 +70,8 @@ dependencies:
   audioplayers: ^0.20.1
   record_mp3: ^3.0.0
   url_launcher: ^6.1.1
+  custom_info_window: ^1.0.1
+
 flutter_icons:
   android: true
   ios: true

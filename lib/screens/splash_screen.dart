@@ -16,17 +16,21 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   // Future getUser() async {
   //   pefUser = await UserPreferences().getUser();
   // }
-  AnimationController _controller;
-  @override
+   @override
   void initState() {
   //   getUser();
     super.initState();
-    _controller = AnimationController(
-        duration: Duration(seconds: (2)),
-    vsync: this,);
+    navToHome();
 
   }
 
+  navToHome(){
+    Timer(
+        Duration(milliseconds: 3300),
+            () =>
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (BuildContext context) => appstate())));
+  }
 
 
 
@@ -37,12 +41,6 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
     final islandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
-
-    Timer(
-        Duration(milliseconds: 3300),
-            () =>
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (BuildContext context) => appstate())));
     return Scaffold(
       body: SafeArea(
         child: Container(

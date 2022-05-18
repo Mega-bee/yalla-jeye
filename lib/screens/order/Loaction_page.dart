@@ -226,18 +226,15 @@ class _LocationPState extends State<LocationP> {
                         Center(
                             child: ElevatedButton(
                                 onPressed: () {
-                                  setState(() {
-                                    _isLoading = true;
-                                  });
                                   showDialog(
                                       context: context,
-                                      builder: (context) => CustomAlertDialogPeter(
-
+                                      builder: (context) =>
+                                          CustomAlertDialogPeter(
                                             title:
                                                 "Are you sure  you want to order? You can't change the order later",
                                             content: "",
                                             cancelBtnFn: () =>
-                                          Navigator.pop(context, false),
+                                                Navigator.pop(context, false),
                                             confrimBtnFn: () async {
                                               print("Loadingg");
 
@@ -264,23 +261,23 @@ class _LocationPState extends State<LocationP> {
                                                     .placeOrder(address
                                                         .addressChoosen.id);
 
-    if (mounted) {
-    setState(() {
-    _isLoading = false;
-    });
-                                                if (!PlacedOrder) {
-                                                  showDialog(
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return AlertDialog(
-                                                          title: Text(order
-                                                              .messagePlaceOrder),
-                                                        );
-                                                      });
-                                                } else {
-                                             navToPromoCode();
-                                                }}
-
+                                                if (mounted) {
+                                                  setState(() {
+                                                    _isLoading = false;
+                                                  });
+                                                  if (!PlacedOrder) {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return AlertDialog(
+                                                            title: Text(order
+                                                                .messagePlaceOrder),
+                                                          );
+                                                        });
+                                                  } else {
+                                                    navToPromoCode();
+                                                  }
+                                                }
 
                                                 order.clearFields();
                                                 address.addressChoosen =
@@ -288,7 +285,6 @@ class _LocationPState extends State<LocationP> {
                                               }
                                             },
                                           ));
-
                                 },
                                 child: Text("Place Order",
                                     style: TextStyle(
@@ -316,10 +312,8 @@ class _LocationPState extends State<LocationP> {
       ),
     );
   }
-  void navToPromoCode(){
 
-    Navigator.push(context, MaterialPageRoute(
-        builder: (_) =>
-            PromoCode()));
+  void navToPromoCode() {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => PromoCode()));
   }
 }

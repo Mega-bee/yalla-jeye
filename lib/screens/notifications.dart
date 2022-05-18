@@ -33,7 +33,6 @@ class _NotificationsState extends State<Notifications> {
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context, listen: true);
     final noti = Provider.of<NotificationProvider>(context, listen: true);
-    final order = Provider.of<OrderProvider>(context, listen: true);
 
     return Scaffold(
       body: noti.loading
