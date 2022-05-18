@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:custom_info_window/custom_info_window.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -15,19 +16,29 @@ class LocationMap extends StatefulWidget {
 }
 
 class LocationMapState extends State<LocationMap> {
-  GoogleMapController googleMapController;
+  Completer<GoogleMapController> controllerGoo = Completer();
+  CustomInfoWindowController customInfoWindowController;
   Set<Marker> _markers = {};
   LatLng _addresPotion;
   LatLng zahahLat = LatLng(33.8463,
       35.9020); //initial currentPosition values cannot assign null values
+
   // static const LatLng _center = const LatLng(45.521563, -122.677433);
   // Location currentLocation = Location();
-
 
   @override
   void initState() {
     // TODO: implement initState
-    defaultLocation();
+    customInfoWindowController = CustomInfoWindowController();
+
+    defaultLocation().then((value) {
+      _markers = value;
+      if(mounted){
+        setState(() {
+
+        });
+      }
+    });
     // SchedulerBinding.instance?.addPostFrameCallback((Duration duration) async {
     //   await Future.delayed(Duration(seconds: 10)).whenComplete(() {
     //     FeatureDiscovery.discoverFeatures(
@@ -42,7 +53,11 @@ class LocationMapState extends State<LocationMap> {
     super.initState();
   }
 
-  void _onMapCreated(GoogleMapController controller) {}
+  void _onMapCreated(GoogleMapController controller) {
+     customInfoWindowController
+        .googleMapController = controller;
+     controllerGoo.complete(controller);
+  }
   MapType _currentMapType = MapType.normal;
 
   // LatLng _lastMapPosition = _center;
@@ -59,11 +74,9 @@ class LocationMapState extends State<LocationMap> {
     });
   }
 
-
-
   bool loading = false;
 
-  void defaultLocation() async {
+  Future<Set<Marker>> defaultLocation() async {
     Location location = new Location();
     bool _serviceEnabled;
     PermissionStatus _permissionGranted;
@@ -86,24 +99,25 @@ class LocationMapState extends State<LocationMap> {
     }
     var myLocation = await Location.instance.getLocation();
     LatLng myPos = LatLng(myLocation.latitude ?? 0, myLocation.longitude ?? 0);
-    if(myPos != null){
+    if (myPos != null) {
       _addresPotion = myPos;
-    }else{
+    } else {
       _addresPotion = zahahLat;
     }
-    _markers.removeAll(_markers);
-    _markers.add(Marker(markerId: MarkerId('Default'),
-      position: _addresPotion,
-      infoWindow: InfoWindow(
-        title: 'Really cool place',
-        snippet: '5 Star Rating',
-      ),
-      icon: BitmapDescriptor.defaultMarker,
-    ));
+    customInfoWindowController.googleMapController.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: myPos, zoom: 15)));
 
-setState(() {
-
-});
+    return   {
+      Marker(
+        markerId: MarkerId('Default'),
+        position: _addresPotion,
+        infoWindow: InfoWindow(
+          title: 'Really cool place',
+          snippet: '5 Star Rating',
+        ),
+        icon: BitmapDescriptor.defaultMarker,
+      )
+    };
   }
 
   // void _onAddMarkerButtonPressed() {
@@ -123,118 +137,120 @@ setState(() {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Map'),
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.arrow_back),
-          ),
-          backgroundColor: redColor,
-        ),
-        body: Stack(
-          children: <Widget>[
-            GoogleMap(
-              // onCameraMove: _onCameraMove,
-              markers: _markers,
-              onTap: (poti){
-                _markers.removeAll(_markers);
-                _markers.add(Marker(markerId: MarkerId('selected'),position: poti , icon: BitmapDescriptor.defaultMarker,));
-                _addresPotion=poti;
-                setState(() {
-
-                });
-              },
-              myLocationEnabled: true,
-              mapType: _currentMapType,
-              buildingsEnabled: true,
-              compassEnabled: true,
-              mapToolbarEnabled: true,
-              myLocationButtonEnabled: false,
-              onMapCreated: _onMapCreated,
-              initialCameraPosition:
-                  CameraPosition(target: zahahLat, zoom: 10.2),
-
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: Column(children: [
-                  FloatingActionButton(
-                    onPressed: () => _onMapTypeButtonPressed(),
-                    materialTapTargetSize: MaterialTapTargetSize.padded,
-                    backgroundColor: redColor,
-                    child: const Icon(Icons.map, size: 30.0),
-                  ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  // FloatingActionButton(
-                  //   onPressed: null,
-                  //   materialTapTargetSize: MaterialTapTargetSize.padded,
-                  //   backgroundColor: redColor,
-                  //   child: const Icon(Icons.add_location, size: 30.0),
-                  // ),
-                  // SizedBox(
-                  //   height: 12,
-                  // ),
-                  FloatingActionButton(
-                    backgroundColor:redColor ,
-                    onPressed: () async{
-    defaultLocation();},
-                    child: const Icon(Icons.location_searching, size: 30.0 ,)),
-
-
-                  //         FloatingActionButton(
-                  // child: Icon(Icons.location_searching,color: Colors.white,),
-                  // onPressed: (){
-                  //
-                  // },)
-                ]),
-              ),
-            ),
-            // Align(
-            //     alignment: Alignment.center,
-            //     // child: !loadingconf?
-                // InkWell(
-                //
-                //     onTap: () async {
-                //       setState(() {
-                //         loadingconf==true;
-                //       });
-                //       await getCurrentLocation();
-                //       setState(() {
-                //         loadingconf==false;
-                //       });
-                //     },
-                // child: Icon(
-                //   Icons.dot,
-                //   size: 20,
-                //   color: redColor,
-                // ))
-          ],
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: FloatingActionButton.extended(
-          backgroundColor: redColor,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-              side: BorderSide(width: 1, color: yellowColor)),
-          elevation: 2,
-          label: Text(
-            "Confirm Location",
-            style: TextStyle(fontSize: 10),
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Map'),
+        leading: IconButton(
           onPressed: () {
-
-            Navigator.pop(context,_addresPotion);
+            Navigator.pop(context);
           },
+          icon: Icon(Icons.arrow_back),
         ),
+        backgroundColor: redColor,
+      ),
+      body: Stack(
+        children: <Widget>[
+          GoogleMap(
+            // onCameraMove: _onCameraMove,
+            markers: _markers,
+            onTap: (poti) {
+              _markers.clear();
+              _markers.add(Marker(
+                markerId: MarkerId('selected'),
+                position: poti,
+                icon: BitmapDescriptor.defaultMarker,
+              ));
+              _addresPotion = poti;
+              setState(() {});
+            },
+            myLocationEnabled: true,
+            mapType: _currentMapType,
+            buildingsEnabled: true,
+            compassEnabled: true,
+            mapToolbarEnabled: true,
+            myLocationButtonEnabled: false,
+            onMapCreated: _onMapCreated,
+            onCameraMove: (co){
+              customInfoWindowController.onCameraMove();
+            },
+            initialCameraPosition: CameraPosition(target: zahahLat, zoom: 10.2),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Column(children: [
+                FloatingActionButton(
+                  onPressed: () => _onMapTypeButtonPressed(),
+                  materialTapTargetSize: MaterialTapTargetSize.padded,
+                  backgroundColor: redColor,
+                  child: const Icon(Icons.map, size: 30.0),
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                // FloatingActionButton(
+                //   onPressed: null,
+                //   materialTapTargetSize: MaterialTapTargetSize.padded,
+                //   backgroundColor: redColor,
+                //   child: const Icon(Icons.add_location, size: 30.0),
+                // ),
+                // SizedBox(
+                //   height: 12,
+                // ),
+//                FloatingActionButton(
+//                    backgroundColor: redColor,
+//                    onPressed: () async {
+//                       defaultLocation();
+//                    },
+//                    child: const Icon(
+//                      Icons.location_searching,
+//                      size: 30.0,
+//                    )),
+
+                //         FloatingActionButton(
+                // child: Icon(Icons.location_searching,color: Colors.white,),
+                // onPressed: (){
+                //
+                // },)
+              ]),
+            ),
+          ),
+          // Align(
+          //     alignment: Alignment.center,
+          //     // child: !loadingconf?
+          // InkWell(
+          //
+          //     onTap: () async {
+          //       setState(() {
+          //         loadingconf==true;
+          //       });
+          //       await getCurrentLocation();
+          //       setState(() {
+          //         loadingconf==false;
+          //       });
+          //     },
+          // child: Icon(
+          //   Icons.dot,
+          //   size: 20,
+          //   color: redColor,
+          // ))
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: redColor,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+            side: BorderSide(width: 1, color: yellowColor)),
+        elevation: 2,
+        label: Text(
+          "Confirm Location",
+          style: TextStyle(fontSize: 10),
+        ),
+        onPressed: () {
+          Navigator.pop(context, _addresPotion);
+        },
       ),
     );
   }

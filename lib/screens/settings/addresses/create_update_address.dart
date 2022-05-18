@@ -415,7 +415,7 @@ bool locationSelected=false;
                                   borderRadius: BorderRadius.circular(5.0),
                                 ),
                                   child: Padding(
-                                    padding: const EdgeInsets.only(left: 15.0,right: 10,top: 3,bottom: 3),
+                                    padding: const EdgeInsets.only(left: 15.0,right: 10,top: 10,bottom: 10),
                                     child: Row(mainAxisAlignment: MainAxisAlignment.start,
                                       children:[
                                         !locationSelected ?    Text("Do You Want To Use Google Map ?",style: TextStyle(fontSize: 15,
@@ -425,8 +425,8 @@ bool locationSelected=false;
                                        : Text("Location selected successfully ",style: TextStyle(fontSize: 15,
                                           fontFamily: 'BerlinSansFB',
                                           fontWeight: FontWeight.w600,
-                                          color: Color.fromRGBO(135, 135, 135, 1),),),
-                                        IconButton(onPressed: (){}, icon: Icon(Icons.map_sharp,color: redColor,)),
+                                          color:Colors.green)),
+                                        Icon(Icons.map_sharp,color: redColor,),
                                     ]),
                                   ),
                                 ),
@@ -463,9 +463,6 @@ bool locationSelected=false;
                                               }else{
                                                 message=await address.updateAddress();
                                               }
-
-
-
                                               await address.getAllAddresses();
                                               showDialog(
                                                 // barrierDismissible: false,

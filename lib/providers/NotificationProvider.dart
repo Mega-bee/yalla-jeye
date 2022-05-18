@@ -52,15 +52,14 @@ class NotificationProvider extends ChangeNotifier {
   }
 
   getNotifications() async {
+    loading = true;
     allData = await _serviceAPi.getAPi(ApiLink.Notification, [], {});
     print(" api in if");
+    print(allData);
     if (allData["error"] != null) {
-      print(allData["error"]);
+      loading = false;
     } else {
       print(" api in else");
-
-      loading = true;
-
       services = List<NotificationModel>.from(
         allData["data"].map(
           (model) => NotificationModel.fromJson(model),

@@ -105,7 +105,7 @@ class ServiceAPi {
       // };
       //  if(!headerget.isEmpty)
       // headers.addAll(head1);
-
+print("body" '$body');
       if (headerget != {}) headers.addAll(headerget);
 
       var request = http.MultipartRequest('POST', Uri.parse(link));
