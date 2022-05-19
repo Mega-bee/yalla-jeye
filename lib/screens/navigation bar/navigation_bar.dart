@@ -48,8 +48,8 @@ class _NavigationState extends State<Navigation> {
 
   @override
   void initState() {
+    init();
     getData();
-    _handleNotificationsListeners();
     LocalNotificationService.initialize(context);
     super.initState();
   }
