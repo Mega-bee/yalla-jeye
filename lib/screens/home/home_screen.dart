@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -50,18 +51,30 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 SizedBox(
                   height: mediaQueryHeight * 0.25,
-                  child: Image.network(
-                    ads.imageUrl,
+                  child:
+                  CachedNetworkImage(
+                    progressIndicatorBuilder:(context, url, progress) =>
+                  Center(
+                    child:CircularProgressIndicator(value: progress.progress,
+                  )
+                  ) ,
+                  imageUrl:  ads.imageUrl,
                     height:
                     MediaQuery.of(context).size.height * 0.25,
                     width: double.infinity,
-                    errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
-                      return Image.asset('assets/images/logo.png',
-                        height:
-                        MediaQuery.of(context).size.height * 0.25,
-                      );
-                    },
-                  ),
+                  )
+                  // Image.network(
+                  //   ads.imageUrl,
+                  //   height:
+                  //   MediaQuery.of(context).size.height * 0.25,
+                  //   width: double.infinity,
+                  //   errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
+                  //     return Image.asset('assets/images/logo.png',
+                  //       height:
+                  //       MediaQuery.of(context).size.height * 0.25,
+                  //     );
+                  //   },
+                  // ),
                 ),
                 Padding(
                     padding: EdgeInsets.only(

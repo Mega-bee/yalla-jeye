@@ -418,7 +418,7 @@ bool locationSelected=false;
                                     padding: const EdgeInsets.only(left: 15.0,right: 10,top: 10,bottom: 10),
                                     child: Row(mainAxisAlignment: MainAxisAlignment.start,
                                       children:[
-                                        !locationSelected ?    Text("Do You Want To Use Google Map ?",style: TextStyle(fontSize: 15,
+                                        !locationSelected ?    Text("Do You Want To Use Google Maps ?",style: TextStyle(fontSize: 15,
                                           fontFamily: 'BerlinSansFB',
                                           fontWeight: FontWeight.w600,
                                           color: Color.fromRGBO(135, 135, 135, 1),),)
