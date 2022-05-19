@@ -122,7 +122,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                       left: screenHeight * 0.03,
                                       bottom: screenHeight * 0.025,
                                       top: screenHeight * 0.025),
-                                  hintText: 'Email Or Phone',
+                                  hintText: 'Phone Number',
                                   hintStyle:const TextStyle(
                                     fontSize: 15,
                                     fontFamily: 'BerlinSansFB',
@@ -135,7 +135,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 ]),
                                 autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
-                                keyboardType: TextInputType.emailAddress,
+                                keyboardType: TextInputType.phone,
                               ),
                               SizedBox(
                                 height:
