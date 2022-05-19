@@ -94,6 +94,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                       child: TextField(
                         onChanged: (value) => filter(value),
                         controller: _textEditingController,
+                        cursorColor: Colors.yellow,
                         decoration: InputDecoration(
                             hintStyle: TextStyle(color: Colors.white),
                             hintText: 'Search your restaurants'),

@@ -11,9 +11,11 @@ class ServiceAPi {
       String link, List<String> l, Map<String, String> headerget) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
+
       Map<String, String> head1 = {
         'Authorization': 'Bearer ${prefs.getString("token")}'
       };
+      print('Bearer ${prefs.getString("token")}');
       // prefs.getString("token")
       //  if(!headerget.isEmpty)
       headers.addAll(head1);
