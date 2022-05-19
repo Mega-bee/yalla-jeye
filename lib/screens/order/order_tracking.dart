@@ -49,13 +49,13 @@ class _TrackingOrderState extends State<TrackingOrder> {
           child: SingleChildScrollView(
             child:  Center(
               child: statusId == 3
-                  ? Image.asset('assets/images/TrackingInfoPhotos/driver 1 – 4.png')
+                  ? Image.asset('assets/images/In Progress.png')
                   : statusId == 5
-                  ? Image.asset('assets/images/TrackingInfoPhotos/driver 1 – 5.png')
+                  ? Image.asset('assets/images/Order Delivered.png')
                   : statusId == 6
-                  ? Image.asset('assets/images/TrackingInfoPhotos/driver 1 – 6.png')
+                  ? Image.asset('assets/images/On the way.png')
                   : statusId == 7
-                  ? Image.asset('assets/images/TrackingInfoPhotos/driver 1 – 7.png')
+                  ? Image.asset('assets/images/2 mins away.png')
                   : Container()
 
 // 1 2 4

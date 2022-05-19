@@ -17,7 +17,7 @@ import 'package:yallajeye/screens/navigation%20bar/navigation_bar.dart';
 import 'package:yallajeye/screens/order/chat/providers/chat_provider.dart';
 import 'package:yallajeye/screens/order/tabbar_order.dart';
 import 'package:yallajeye/screens/splash_screen.dart';
-
+import 'dart:io' as plat ;
 import 'Helpers/Constant.dart';
 import 'Services/local_notifications.dart';
 import 'screens/auth/signin_screen.dart';
@@ -31,6 +31,11 @@ import 'screens/auth/signin_screen.dart';
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+  final FirebaseMessaging firebaseMessaging =FirebaseMessaging.instance;
+  Future<void> init() async{
+  if(plat.Platform.isIOS){
+    await FirebaseMessaging.instance.requestPermission();}
+  }
 
  await FirebaseMessaging.instance.getToken().then((value) => print("firebase token is $value"));
 

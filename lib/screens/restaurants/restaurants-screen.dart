@@ -90,8 +90,12 @@ results=homePage.restaurants.where((element) => element.restaurantName.toLowerCa
                       child: TextField(
                         onChanged: (value) =>filter(value),
                         controller: _textEditingController,
+                        cursorColor: yellowColor,
+                        style: TextStyle(color: Colors.white),
+
 
                         decoration: InputDecoration(
+
                             hintStyle: TextStyle(color: Colors.white),
                             hintText: 'Search your restaurants'),
                       ),
