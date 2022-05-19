@@ -17,6 +17,7 @@ import 'package:yallajeye/widgets/custom_alert_dialog.dart';
 import '../../Services/local_notifications.dart';
 import '../order/order_list.dart';
 import '../restaurants/restaurants-screen.dart';
+import 'dart:io' as p;
 
 class Navigation extends StatefulWidget {
   const Navigation({Key key}) : super(key: key);
@@ -43,6 +44,8 @@ class _NavigationState extends State<Navigation> {
     await homePage.getHomePage();
   }
    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+
   @override
   void initState() {
     getData();
@@ -50,20 +53,32 @@ class _NavigationState extends State<Navigation> {
     LocalNotificationService.initialize(context);
     super.initState();
   }
-  void _handleNotificationsListeners() {
+
+  Future<void> init() async {
+    if (p.Platform.isIOS) {
+      await _fcm.requestPermission();
+    }
+    await _fcm.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+    // var isActive = _prefHelper.getIsActive();
+    await _handleNotificationsListeners();
+  }
+
+  void _handleNotificationsListeners() async {
 
 //to navigate when it is in background or terminated
-    FirebaseMessaging.instance
-        .getInitialMessage()
-        .then((RemoteMessage message) {
-      if (message != null) {
-        print("First message${message}");
-        int id = int.parse(message.data["orderId"].toString());
-        // demo data
-        Navigator.of(context).push(MaterialPageRoute(builder: (_)=>TabBarOrder(numTab: 0, id:id)));
-      }
-    }
-    );
+//    FirebaseMessaging.onMessage((RemoteMessage message) {
+//      if (message != null) {
+//        print("First message${message}");
+//        int id = int.parse(message.data["orderId"].toString());
+//        // demo data
+//        Navigator.of(context).push(MaterialPageRoute(builder: (_)=>TabBarOrder(numTab: 0, id:id)));
+//      }
+//    }
+//    );
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print("second message${message.data}");
 
