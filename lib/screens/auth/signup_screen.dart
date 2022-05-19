@@ -230,7 +230,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           key: formkey,
                           child: Column(children: [
                             TextFormField(
-                              controller: authProvider.email,
+                              controller: authProvider.phoneNumber,
                               // onSaved: (value) => email = value,
                               decoration: InputDecoration(
                                 filled: true,
@@ -243,7 +243,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     left: screenHeight * 0.03,
                                     bottom: screenHeight * 0.025,
                                     top: screenHeight * 0.025),
-                                hintText: 'Email Or Phone',
+                                hintText: 'Phone Number',
                                 hintStyle: TextStyle(
                                   fontSize: 15,
                                   fontFamily: 'BerlinSansFB',
@@ -251,13 +251,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   color: Color.fromRGBO(135, 135, 135, 1),
                                 ),
                               ),
-                              validator: MultiValidator([
-                                RequiredValidator(errorText: 'Required *'),
-//                                EmailValidator(errorText: 'Not a valid email'),
-                              ]),
+                              validator: validateMobile,
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
-                              keyboardType: TextInputType.emailAddress,
+                              keyboardType: TextInputType.phone,
                             ),
                             SizedBox(
                               height: screenHeight * 0.015,
@@ -407,8 +404,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             TextFormField(
                               // onSaved: (value) => phoneNumber = value,
-                              controller: authProvider.phoneNumber,
-                              validator: validateMobile,
+                              controller: authProvider.email,
+                              validator: MultiValidator([
+                                EmailValidator(errorText: "Not a valid email")
+                              ]),
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
@@ -417,7 +416,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   borderRadius: BorderRadius.circular(15.0),
                                 ),
                                 contentPadding: EdgeInsets.all(15),
-                                hintText: 'Phone Number',
+                                hintText: 'Email',
                                 hintStyle: TextStyle(
                                   fontSize: 15,
                                   fontFamily: 'BerlinSansFB',
@@ -427,7 +426,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
-                              keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.emailAddress,
                             ),
                             SizedBox(
                               height: MediaQuery.of(context).size.height * 0.02,
