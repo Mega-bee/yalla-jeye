@@ -44,6 +44,12 @@ class _SignInScreenState extends State<SignInScreen> {
       print('Not validated');
     }
   }
+  String validateMobile(String value) {
+    if (value.length != 8)
+      return 'Mobile Number must be of 8 digit';
+    else
+      return null;
+  }
 
   //cutom class
   String validatePass(value) {
@@ -116,7 +122,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                       left: screenHeight * 0.03,
                                       bottom: screenHeight * 0.025,
                                       top: screenHeight * 0.025),
-                                  hintText: 'Email',
+                                  hintText: 'Email Or Phone',
                                   hintStyle:const TextStyle(
                                     fontSize: 15,
                                     fontFamily: 'BerlinSansFB',
@@ -126,8 +132,6 @@ class _SignInScreenState extends State<SignInScreen> {
                                 ),
                                 validator: MultiValidator([
                                   RequiredValidator(errorText: 'Required *'),
-                                  EmailValidator(
-                                      errorText: 'Not a valid email'),
                                 ]),
                                 autovalidateMode:
                                 AutovalidateMode.onUserInteraction,

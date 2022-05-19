@@ -243,7 +243,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     left: screenHeight * 0.03,
                                     bottom: screenHeight * 0.025,
                                     top: screenHeight * 0.025),
-                                hintText: 'Email',
+                                hintText: 'Email Or Phone',
                                 hintStyle: TextStyle(
                                   fontSize: 15,
                                   fontFamily: 'BerlinSansFB',
@@ -253,7 +253,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               validator: MultiValidator([
                                 RequiredValidator(errorText: 'Required *'),
-                                EmailValidator(errorText: 'Not a valid email'),
+//                                EmailValidator(errorText: 'Not a valid email'),
                               ]),
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
@@ -542,6 +542,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                    signup = await authProvider.signUp(image);
                                    print("bool is ${signup}");
                                     if (signup) {
+                                      setState(() {
+                                        isLoading = false;
+                                      });
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
                                           builder: (_) =>
@@ -550,9 +553,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                       .text),
                                         ),
                                       );
-                                      setState(() {
-                                        isLoading = false;
-                                      });
+
                                     }else{
                                       Fluttertoast.showToast(
                                           msg: authProvider.message,
