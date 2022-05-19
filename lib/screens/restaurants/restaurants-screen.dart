@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -12,7 +11,6 @@ import 'package:yallajeye/providers/user.dart';
 import 'package:yallajeye/screens/auth/signin_screen.dart';
 import 'package:yallajeye/screens/restaurants/MenuDetails2.dart';
 
-
 class RestaurantsScreen extends StatefulWidget {
   @override
   _RestaurantsScreenState createState() => _RestaurantsScreenState();
@@ -25,41 +23,47 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
   List<Restaurants> searchedRestaurant;
   bool _hasInternet;
 
-
-
   @override
   void initState() {
     checkConnection();
-    final homePage=Provider.of<HomePageProvider>(context,listen: false);
+    final homePage = Provider.of<HomePageProvider>(context, listen: false);
     searchedRestaurant = homePage.restaurants;
     super.initState();
   }
 
-  filter(String value){
-    final homePage=Provider.of<HomePageProvider>(context,listen: false);
-    List<Restaurants> results=[];
+  filter(String value) {
+    final homePage = Provider.of<HomePageProvider>(context, listen: false);
+    List<Restaurants> results = [];
 
-    if(value.isEmpty){
+    if (value.isEmpty) {
       results = homePage.restaurants;
-    }else{
-results=homePage.restaurants.where((element) => element.restaurantName.toLowerCase().contains(value.toLowerCase())).toList();
+    } else {
+      results = homePage.restaurants
+          .where((element) => element.restaurantName
+              .toLowerCase()
+              .contains(value.toLowerCase()))
+          .toList();
     }
     setState(() {
-      searchedRestaurant=results;
+      searchedRestaurant = results;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final user=Provider.of<UserProvider>(context,listen:true);
+    final user = Provider.of<UserProvider>(context, listen: true);
     var _width = MediaQuery.of(context).size.width;
     final qPortrait = MediaQuery.of(context).orientation;
 
     final mediaQuery = MediaQuery.of(context);
-    final homePage=Provider.of<HomePageProvider>(context);
-    final restaurant=homePage.restaurants;
+    final homePage = Provider.of<HomePageProvider>(context);
+    final restaurant = homePage.restaurants;
 
     return SafeArea(
+        child: RefreshIndicator(
+      onRefresh: () async {
+        await homePage.getHomePage();
+      },
       child: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -88,9 +92,8 @@ results=homePage.restaurants.where((element) => element.restaurantName.toLowerCa
                     ),
                     Expanded(
                       child: TextField(
-                        onChanged: (value) =>filter(value),
+                        onChanged: (value) => filter(value),
                         controller: _textEditingController,
-
                         decoration: InputDecoration(
                             hintStyle: TextStyle(color: Colors.white),
                             hintText: 'Search your restaurants'),
@@ -101,19 +104,24 @@ results=homePage.restaurants.where((element) => element.restaurantName.toLowerCa
               ),
             )),
           ),
-        restaurant.isEmpty?
-        SliverToBoxAdapter(
-          child: Center(child: Text("No restaurants"),),
-        )
-        :SliverList(delegate: SliverChildBuilderDelegate(
-                  (context, int index) {
+          restaurant.isEmpty
+              ? SliverToBoxAdapter(
+                  child: Center(
+                    child: Text("No restaurants"),
+                  ),
+                )
+              : SliverList(
+                  delegate: SliverChildBuilderDelegate((con, index) {
                     return GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) =>
-                                MenuDetails(restaurantName: searchedRestaurant[index].restaurantName,restaurantLink: searchedRestaurant[index].pdfUrl,)
-                          ),
+                              builder: (context) => MenuDetails(
+                                    restaurantName: searchedRestaurant[index]
+                                        .restaurantName,
+                                    restaurantLink:
+                                        searchedRestaurant[index].pdfUrl,
+                                  )),
                         );
                       },
                       child: Container(
@@ -127,14 +135,18 @@ results=homePage.restaurants.where((element) => element.restaurantName.toLowerCa
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Image.network(searchedRestaurant[index].imageUrl,height:
-                              MediaQuery.of(context).size.height * 0.1,
-                              errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
-                                return Image.asset('assets/images/logo.png',
-                                  height:
-                                  MediaQuery.of(context).size.height * 0.1,
-                                );
-                              },
+                              Image.network(
+                                searchedRestaurant[index].imageUrl,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.1,
+                                errorBuilder: (BuildContext context,
+                                    Object exception, StackTrace stackTrace) {
+                                  return Image.asset(
+                                    'assets/images/logo.png',
+                                    height: MediaQuery.of(context).size.height *
+                                        0.1,
+                                  );
+                                },
                               ),
 
                               // SizedBox(
@@ -154,12 +166,12 @@ results=homePage.restaurants.where((element) => element.restaurantName.toLowerCa
                                                 // style: TextStyle(
                                                 //     fontWeight: FontWeight.bold,
                                                 //     color: Colors.black)),
-                                            ),
+                                                ),
                                             TextSpan(
-                                                text: searchedRestaurant[index].restaurantName,
+                                                text: searchedRestaurant[index]
+                                                    .restaurantName,
                                                 style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold,
+                                                    fontWeight: FontWeight.bold,
                                                     color: Colors.black)),
                                           ],
                                         ),
@@ -175,9 +187,10 @@ results=homePage.restaurants.where((element) => element.restaurantName.toLowerCa
                                                 // style: TextStyle(
                                                 //     fontWeight: FontWeight.bold,
                                                 //     color: Colors.black)
-                                            ),
+                                                ),
                                             TextSpan(
-                                                text: searchedRestaurant[index].location,
+                                                text: searchedRestaurant[index]
+                                                    .location,
                                                 style: TextStyle(
                                                     fontWeight:
                                                         FontWeight.normal,
@@ -197,7 +210,8 @@ results=homePage.restaurants.where((element) => element.restaurantName.toLowerCa
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.black)),
                                             TextSpan(
-                                                text: searchedRestaurant[index].speciality,
+                                                text: searchedRestaurant[index]
+                                                    .speciality,
                                                 style: TextStyle(
                                                     fontWeight:
                                                         FontWeight.normal,
@@ -217,7 +231,8 @@ results=homePage.restaurants.where((element) => element.restaurantName.toLowerCa
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.black)),
                                             TextSpan(
-                                                text: searchedRestaurant[index].opensAt,
+                                                text: searchedRestaurant[index]
+                                                    .opensAt,
                                                 style: TextStyle(
                                                     fontWeight:
                                                         FontWeight.normal,
@@ -225,7 +240,6 @@ results=homePage.restaurants.where((element) => element.restaurantName.toLowerCa
                                           ],
                                         ),
                                       ),
-
                                       SizedBox(
                                         height: mediaQuery.size.height * 0.01,
                                       ),
@@ -238,7 +252,9 @@ results=homePage.restaurants.where((element) => element.restaurantName.toLowerCa
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.black)),
                                             TextSpan(
-                                                text: searchedRestaurant[index].rating.toString(),
+                                                text: searchedRestaurant[index]
+                                                    .rating
+                                                    .toString(),
                                                 style: TextStyle(
                                                     fontWeight:
                                                         FontWeight.normal,
@@ -247,73 +263,19 @@ results=homePage.restaurants.where((element) => element.restaurantName.toLowerCa
                                         ),
                                       ),
                                     ],
-
-                                    // Text('Specialty:',
-                                    //     //  locale: ,
-                                    //     style: TextStyle(
-                                    //         color: Colors.black54,
-                                    //         fontSize: 13,
-                                    //         decoration:
-                                    //         TextDecoration.underline)
-                                    //
-                                    //
-                                    // ),
-                                    // SizedBox(
-                                    //   height: 20,
-                                    // ),
-                                    // Text('Opens From:',
-                                    //     //  locale: ,
-                                    //     style: TextStyle(
-                                    //         color: Colors.black54,
-                                    //         fontSize: 13,
-                                    //         decoration:
-                                    //         TextDecoration.underline)
-                                    //
-                                    //
-                                    // ),
-                                    // SizedBox(
-                                    //   height: 20,
-                                    // ),
-                                    // Text('Rating:',
-                                    //     //  locale: ,
-                                    //     style: TextStyle(
-                                    //         color: Colors.black54,
-                                    //         fontSize: 13,
-                                    //         decoration:
-                                    //         TextDecoration.underline)
-                                    //
-                                    //
-                                    // ),
                                   ),
                                 ),
                               ),
-                              // SizedBox(
-                              //   width:
-                              //       MediaQuery.of(context).size.width / 3,
-                              // ),
-
-                              // Expanded(
-                              //   child: Image.network(
-                              //     occa.all[index].image,
-                              //     // width:
-                              //     //     MediaQuery.of(context).size.width / 5.5,
-                              //   ),
-                              // ),
-                              //  ],
-                              //  )
                             ],
                           ),
                         ),
                       ),
                     );
-                  },
-           childCount: searchedRestaurant.length,
-                ))
+                  },childCount: searchedRestaurant.length),
+                )
         ],
-      )
-    );
-
-
+      ),
+    ));
   }
 
   checkConnection() async {

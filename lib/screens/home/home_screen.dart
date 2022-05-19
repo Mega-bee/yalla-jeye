@@ -39,7 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     AdsDetails(ads.title, ads.description, ads.imageUrl)));
           },
           child: Card(
-
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(20),
@@ -52,13 +51,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: mediaQueryHeight * 0.25,
                   child: Image.network(
                     ads.imageUrl,
-                    height:
-                    MediaQuery.of(context).size.height * 0.25,
+                    height: MediaQuery.of(context).size.height * 0.25,
                     width: double.infinity,
-                    errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
-                      return Image.asset('assets/images/logo.png',
-                        height:
-                        MediaQuery.of(context).size.height * 0.25,
+                    errorBuilder: (BuildContext context, Object exception,
+                        StackTrace stackTrace) {
+                      return Image.asset(
+                        'assets/images/logo.png',
+                        height: MediaQuery.of(context).size.height * 0.25,
                       );
                     },
                   ),
@@ -102,94 +101,79 @@ class _HomeScreenState extends State<HomeScreen> {
         );
     return Scaffold(
         backgroundColor: Colors.white,
-        body: Center(
-          child: SingleChildScrollView(
-              child: Container(
-            child: Column(
-
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: mediaQueryHeight * 0.015),
-                  child: homePage.other.isEmpty
-                      ? Center(
-                          child:CircularProgressIndicator(color: redColor,),
-                        )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            CarouselSlider.builder(
-                              itemCount: homePage.services.length,
-                              itemBuilder: (context, index, reaIndex) {
-                                final list = homePage.services[index];
-                                return buildAdsService(list, index);
-                              },
-                              options: CarouselOptions(
-                                onPageChanged: (index, reason) => setState(() {
-                                  activeIndex1 = index;
-                                }),
-                                autoPlay: true,
-                                height: mediaQueryHeight * 0.32,
-                                autoPlayCurve: Curves.fastOutSlowIn,
-                                enableInfiniteScroll: true,
-                                autoPlayAnimationDuration:
-                                    Duration(milliseconds: 800),
-                                viewportFraction: 1,
-                              ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            child: homePage.other.isEmpty
+                ? Center(
+                    child: CircularProgressIndicator(
+                      color: redColor,
+                    ),
+                  )
+                : RefreshIndicator(
+                    onRefresh: () async {
+                      await homePage.getHomePage();
+                    },
+                    child: SingleChildScrollView(
+                      physics: AlwaysScrollableScrollPhysics(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          CarouselSlider.builder(
+                            itemCount: homePage.services.length,
+                            itemBuilder: (context, index, reaIndex) {
+                              final list = homePage.services[index];
+                              return buildAdsService(list, index);
+                            },
+                            options: CarouselOptions(
+                              onPageChanged: (index, reason) => setState(() {
+                                activeIndex1 = index;
+                              }),
+                              autoPlay: true,
+                              height: mediaQueryHeight * 0.32,
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                              enableInfiniteScroll: true,
+                              autoPlayAnimationDuration:
+                                  Duration(milliseconds: 800),
+                              viewportFraction: 1,
                             ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: mediaQueryHeight * 0.02,
-                                  horizontal: mediaQueryWidth * 0.05),
-                              child: buildIndicator1(),
-                            )
-                          ],
-                        ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: mediaQueryHeight * 0.01),
-                  child: homePage.other.isEmpty
-                      ? Center(
-                          // child: CircularProgressIndicator(color: redColor,),
-                        )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            CarouselSlider.builder(
-                              itemCount: homePage.other.length,
-                              itemBuilder: (context, index, reaIndex) {
-                                final list = homePage.other[index];
-                                return buildAdsService(list, index);
-                              },
-                              options: CarouselOptions(
-                                onPageChanged: (index, reason) => setState(() {
-                                  this.activeIndex2 = index;
-                                }),
-                                autoPlay: true,
-                                height: mediaQueryHeight * 0.32,
-                                autoPlayCurve: Curves.fastOutSlowIn,
-                                enableInfiniteScroll: true,
-                                autoPlayAnimationDuration:
-                                    Duration(milliseconds: 800),
-                                viewportFraction: 1,
-                              ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: mediaQueryHeight * 0.02,
+                                horizontal: mediaQueryWidth * 0.05),
+                            child: buildIndicator1(),
+                          ),
+                          CarouselSlider.builder(
+                            itemCount: homePage.other.length,
+                            itemBuilder: (context, index, reaIndex) {
+                              final list = homePage.other[index];
+                              return buildAdsService(list, index);
+                            },
+                            options: CarouselOptions(
+                              onPageChanged: (index, reason) => setState(() {
+                                this.activeIndex2 = index;
+                              }),
+                              autoPlay: true,
+                              height: mediaQueryHeight * 0.32,
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                              enableInfiniteScroll: true,
+                              autoPlayAnimationDuration:
+                                  Duration(milliseconds: 800),
+                              viewportFraction: 1,
                             ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: mediaQueryHeight * 0.02,
-                                  horizontal: mediaQueryWidth * 0.05),
-                              child: buildIndicator2(),
-                            )
-                          ],
-                        ),
-                ),
-              ],
-            ),
-          )),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: mediaQueryHeight * 0.02,
+                                horizontal: mediaQueryWidth * 0.05),
+                            child: buildIndicator2(),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+          ),
         ));
   }
 }
-
-
-
-
-
