@@ -47,7 +47,16 @@ import 'screens/auth/signin_screen.dart';
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]
   );
-  runApp(const MyApp());
+  runApp(MultiProvider(
+      providers: [ChangeNotifierProvider.value(value: OrderProvider()),
+        Provider<ChatProvider>(create: (_)=>ChatProvider(),),
+        ChangeNotifierProvider.value(value: UserProvider.statusfunction()),
+        ChangeNotifierProvider.value(value: AddressProvider()),
+        ChangeNotifierProvider.value(value: HomePageProvider()),
+        ChangeNotifierProvider.value(value: NotificationProvider()),
+        // ChangeNotifierProvider.value(value: PersonalInfoProvider()),
+      ],
+      child: const MyApp()));
 }
 class appstate extends StatefulWidget {
   const appstate({Key key}) : super(key: key);
@@ -111,24 +120,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [ChangeNotifierProvider.value(value: OrderProvider()),
-        Provider<ChatProvider>(create: (_)=>ChatProvider(),),
-        ChangeNotifierProvider.value(value: UserProvider.statusfunction()),
-        ChangeNotifierProvider.value(value: AddressProvider()),
-        ChangeNotifierProvider.value(value: HomePageProvider()),
-        ChangeNotifierProvider.value(value: NotificationProvider()),
-        // ChangeNotifierProvider.value(value: PersonalInfoProvider()),
-                      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Yalla Jeye',
-        theme: ThemeData(
-          primarySwatch: redColor,
-            unselectedWidgetColor:yellowColor
-        ),
-        home: SplashScreen(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Yalla Jeye',
+      theme: ThemeData(
+        primarySwatch: redColor,
+          unselectedWidgetColor:yellowColor
       ),
+      home: SplashScreen(),
     );
   }
 }

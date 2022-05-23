@@ -19,7 +19,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int activeIndex1;
   int activeIndex2;
-
+  HomePageProvider homePage ;
   @override
   void initState() {
     activeIndex1 = 0;
@@ -29,9 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    homePage = Provider.of<HomePageProvider>(context, listen: true);
     var mediaQueryHeight = MediaQuery.of(context).size.height;
     var mediaQueryWidth = MediaQuery.of(context).size.width;
-    final homePage = Provider.of<HomePageProvider>(context, listen: true);
     Widget buildAdsService(Ads ads, int index) => InkWell(
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(

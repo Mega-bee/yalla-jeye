@@ -16,6 +16,7 @@ class ServiceAPi {
         'Authorization': 'Bearer ${prefs.getString("token")}'
       };
       print('Bearer ${prefs.getString("token")}');
+      print('URL ${link}');
       // prefs.getString("token")
       //  if(!headerget.isEmpty)
       headers.addAll(head1);
@@ -29,6 +30,7 @@ class ServiceAPi {
       var response = await http.Response.fromStream(responses);
 
       Map<String, dynamic> responseData = json.decode(response.body);
+      print('URL ${responseData}');
       if (responseData["statusCode"] == 200) {
         return responseData["data"];
       } else {
@@ -70,7 +72,7 @@ class ServiceAPi {
       http.StreamedResponse responses = await request.send();
       var response = await http.Response.fromStream(responses);
       Map<String, dynamic> responseData = json.decode(response.body);
-
+      print('URL ${responseData}');
       if (responseData["statusCode"] == 200) {
         // if (!true) {
         //   if (responseData["isverified"]) {

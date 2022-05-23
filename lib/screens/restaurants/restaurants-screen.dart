@@ -22,11 +22,12 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
   List<Restaurant> listRes = [];
   List<Restaurants> searchedRestaurant;
   bool _hasInternet;
-
+  HomePageProvider homePage ;
   @override
   void initState() {
     checkConnection();
-    final homePage = Provider.of<HomePageProvider>(context, listen: false);
+     homePage = Provider.of<HomePageProvider>(context, listen: false);
+//     homePage.getHomePage();
     searchedRestaurant = homePage.restaurants;
     super.initState();
   }
@@ -56,8 +57,8 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
     final qPortrait = MediaQuery.of(context).orientation;
 
     final mediaQuery = MediaQuery.of(context);
-    final homePage = Provider.of<HomePageProvider>(context);
-    final restaurant = homePage.restaurants;
+//     homePage = Provider.of<HomePageProvider>(context);
+//    final restaurant = homePage.restaurants;
 
     return SafeArea(
         child: RefreshIndicator(
@@ -105,7 +106,7 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
               ),
             )),
           ),
-          restaurant.isEmpty
+          searchedRestaurant.isEmpty
               ? SliverToBoxAdapter(
                   child: Center(
                     child: Text("No restaurants"),

@@ -196,7 +196,7 @@ currentUserId=order.orderByIdModel.id.toString();
   Future<String> getFilePath() async {
     count++;
     Directory storageDirectory = await getTemporaryDirectory();
-    String sdPath = storageDirectory.path +"/record/";
+    String sdPath = storageDirectory.path ;
     var d = Directory(sdPath);
     if (!d.existsSync()) {
       d.createSync(recursive: true);
