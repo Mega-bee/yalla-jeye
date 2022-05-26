@@ -171,7 +171,7 @@ class LocationMapState extends State<LocationMap> {
             myLocationButtonEnabled: false,
             onMapCreated: _onMapCreated,
             onCameraMove: (co){
-              customInfoWindowController.onCameraMove();
+//              customInfoWindowController.onCameraMove();
             },
             initialCameraPosition: CameraPosition(target: zahahLat, zoom: 10.2),
           ),

@@ -137,18 +137,44 @@ class _RestaurantsScreenState extends State<RestaurantsScreen> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Image.network(
-                                searchedRestaurant[index].imageUrl,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.1,
-                                errorBuilder: (BuildContext context,
-                                    Object exception, StackTrace stackTrace) {
-                                  return Image.asset(
-                                    'assets/images/logo.png',
-                                    height: MediaQuery.of(context).size.height *
-                                        0.1,
-                                  );
-                                },
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Image.network(
+                                  searchedRestaurant[index].imageUrl,
+                                  errorBuilder: (BuildContext context,
+                                      Object exception,
+                                      StackTrace stackTrace) {
+                                    return Image.asset('assets/images/logo.png',
+                                    );
+                                  },
+                                  loadingBuilder: (BuildContext context,
+                                      Widget child,
+                                      ImageChunkEvent loadingProgress) {
+                                    if (loadingProgress == null)
+                                      return child;
+                                    return Padding(
+                                      padding:
+                                      const EdgeInsets.all(25.0),
+                                      child: Center(
+                                        child:
+                                        CircularProgressIndicator(
+                                          color: Colors.red,
+                                          value: loadingProgress
+                                              .expectedTotalBytes !=
+                                              null
+                                              ? loadingProgress
+                                              .cumulativeBytesLoaded /
+                                              loadingProgress
+                                                  .expectedTotalBytes
+                                              : null,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  fit: BoxFit.fill,
+                                  width: 100,
+                                  height: 100,
+                                ),
                               ),
 
                               // SizedBox(
