@@ -50,7 +50,32 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   height: mediaQueryHeight * 0.25,
                   child: Image.network(
+
                     ads.imageUrl,
+                    loadingBuilder: (BuildContext context,
+                        Widget child,
+                        ImageChunkEvent loadingProgress) {
+                      if (loadingProgress == null)
+                        return child;
+                      return Padding(
+                        padding:
+                        const EdgeInsets.all(25.0),
+                        child: Center(
+                          child:
+                          CircularProgressIndicator(
+                            color: Colors.red,
+                            value: loadingProgress
+                                .expectedTotalBytes !=
+                                null
+                                ? loadingProgress
+                                .cumulativeBytesLoaded /
+                                loadingProgress
+                                    .expectedTotalBytes
+                                : null,
+                          ),
+                        ),
+                      );
+                    },
                     height: MediaQuery.of(context).size.height * 0.25,
                     width: double.infinity,
                     errorBuilder: (BuildContext context, Object exception,
