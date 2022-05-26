@@ -10,6 +10,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -65,10 +66,11 @@ class ChatPageState extends State<ChatPage> {
   String path="";
   String audioUrl="";
   AudioPlayer audioPlayer = AudioPlayer();
-  bool isPlaying=false;
+  Timer timer;
+//  bool isPlaying=false;
   Duration duration=Duration.zero;
-  Duration position=Duration.zero;
-  bool loadingRecord=false;
+//  Duration position=Duration.zero;
+//  bool loadingRecord=false;
   getPermission()async{
     final status = await Permission.microphone.request();
     if(status.isGranted){
@@ -92,25 +94,26 @@ class ChatPageState extends State<ChatPage> {
     getPermission();
     record.init();
     chatProvider = context.read<ChatProvider>();
-    // authProvider = context.read<AuthProvider>();
-    audioPlayer.onPlayerStateChanged.listen((state) {
-      setState(() {
-        isPlaying=state==PlayerState.PLAYING;
-      });
-    });
+//    // authProvider = context.read<AuthProvider>();
+//    audioPlayer.onPlayerStateChanged.listen((state) {
+//      print(state);
+//      setState(() {
+//        isPlaying= state==PlayerState.PLAYING;
+//      });
+//    });
 
-    audioPlayer.onDurationChanged.listen((newDuration) {
-      setState(() {
-        setState(() {
-          duration=newDuration;
-        });
-      });
-    });
-    audioPlayer.onAudioPositionChanged.listen((newPosition) {
-      setState(() {
-        position=newPosition;
-      });
-    });
+//    audioPlayer.onDurationChanged.listen((newDuration) {
+//      setState(() {
+//        setState(() {
+//          duration=newDuration;
+//        });
+//      });
+//    });
+//    audioPlayer.onAudioPositionChanged.listen((newPosition) {
+//      setState(() {
+//        position=newPosition;
+//      });
+//    });
 
     focusNode.addListener(onFocusChange);
     listScrollController.addListener(_scrollListener);
@@ -718,6 +721,7 @@ currentUserId=order.orderByIdModel.id.toString();
   Widget buildInput() {
     return Container(
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           // Button send image
           Material(
@@ -746,88 +750,92 @@ currentUserId=order.orderByIdModel.id.toString();
           // Edit text
           Flexible(
             child: Container(
-              child: Stack(
-                children: [
-                  AnimatedOpacity(
-
-                    opacity: RecordMp3.instance.status==RecordStatus.RECORDING?0:1,
-                    duration: Duration(milliseconds: 150),
-                    child: TextField(
-                      onSubmitted: (value) {
-                        onSendMessage(textEditingController.text, TypeMessage.text);
-                      },
-                      style: TextStyle(color: ColorConstants.primaryColor, fontSize: 15),
-                      controller: textEditingController,
-                      decoration: InputDecoration.collapsed(
-                        hintText: 'Type your message...',
-                        hintStyle: TextStyle(color: ColorConstants.greyColor),
-                      ),
-                      focusNode: focusNode,
-                    ),
-                  ),
-                  AnimatedOpacity( opacity: RecordMp3.instance.status==RecordStatus.RECORDING?1:0,
-                      duration: Duration(milliseconds: 150),
-                  child: Text("Voice Recording"),)
-                ],
+              child: isRecording ?
+             const Padding(
+                padding: const EdgeInsetsDirectional.only(bottom: 3),
+                child: LoadingIndicator(
+                    indicatorType: Indicator.audioEqualizer, /// Required, The loading type of the widget
+                    colors: const [Colors.red,Colors.yellow,Colors.black],       /// Optional, The color collections
+                    strokeWidth: 1,                     /// Optional, The stroke of the line, only applicable to widget which contains line
+                    backgroundColor: Colors.transparent,      /// Optional, Background of the widget
+                  /// Optional, the stroke backgroundColor
+                ),
               )
+                  :
+              TextField(
+                onSubmitted: (value) {
+                  onSendMessage(textEditingController.text, TypeMessage.text);
+                },
+                style: TextStyle(color: ColorConstants.primaryColor, fontSize: 15),
+                controller: textEditingController,
+                decoration: InputDecoration.collapsed(
+                  hintText: 'Type your message...',
+                  hintStyle: TextStyle(color: ColorConstants.greyColor),
+                ),
+                focusNode: focusNode,
+              ),
             ),
           ),
 
           // Button send message
-          Material(
-            child: Container(
-              // margin: EdgeInsets.symmetric(horizontal: 8),
-              child: IconButton(
-                icon: Icon(Icons.send),
-                onPressed: () => onSendMessage(textEditingController.text, TypeMessage.text),
-                color: ColorConstants.primaryColor,
-              ),
-            ),
-            color: Colors.white,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 10.0),
-            child: GestureDetector(
+          Row(children: [
+            Material(
               child: Container(
-                  width: 50,
-                  height: 50,
-                  child: Card(
-                    color: redColor,
-                    shape:const CircleBorder(),
-                      child: Icon(Icons.mic,color: !isRecording ? Colors.white:yellowColor,))),
-              onLongPress: ()async{
-                AudioPlayer.players.forEach((key, value) {
-                  value.stop();
-                });
-                setState(() {
-                  isRecording=true;
-                });
-                path=await getFilePath();
-                // final status = await Permission.microphone.request();
-
-                if(await Permission.microphone.isGranted){
-                  RecordMp3.instance.start(path, (type){
-                    return  setState(() {
-                    });
-                  });
-                }else{
-                  await Permission.microphone.request();
-                }
-
-
-
-                // record.startRecord(path);
-              },
-             onLongPressEnd: (val)async{
-                setState(() {
-                  isRecording=false;
-                });
-                RecordMp3.instance.stop();
-               await uploadAudioFile();
-             },
-              onTap: (){},
+                // margin: EdgeInsets.symmetric(horizontal: 8),
+                child: IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: () => onSendMessage(textEditingController.text, TypeMessage.text),
+                  color: ColorConstants.primaryColor,
+                ),
+              ),
+              color: Colors.white,
             ),
-          )
+            Padding(
+              padding: const EdgeInsets.only(right: 10.0),
+              child: GestureDetector(
+                child: Container(
+                    width: 50,
+                    height: 50,
+                    child: Card(
+                        color: redColor,
+                        shape:const CircleBorder(),
+                        child: Icon(Icons.mic,color: !isRecording ? Colors.white:yellowColor,))),
+                onLongPress: ()async{
+                  AudioPlayer.players.forEach((key, value) {
+                    value.stop();
+                  });
+                  setState(() {
+                    isRecording=true;
+
+                  });
+                  path=await getFilePath();
+                  // final status = await Permission.microphone.request();
+
+                  if(await Permission.microphone.isGranted){
+                    RecordMp3.instance.start(path, (type){
+                      return  setState(() {
+                      });
+                    });
+                  }else{
+                    await Permission.microphone.request();
+                  }
+
+
+
+                  // record.startRecord(path);
+                },
+                onLongPressEnd: (val)async{
+                  setState(() {
+                    isRecording=false;
+                  });
+                  RecordMp3.instance.stop();
+                  await uploadAudioFile();
+                },
+                onTap: (){},
+              ),
+            )
+          ],)
+
         ],
       ),
       width: double.infinity,
