@@ -73,6 +73,7 @@ class ServiceAPi {
       var response = await http.Response.fromStream(responses);
       Map<String, dynamic> responseData = json.decode(response.body);
       print('URL ${responseData}');
+      print('RESPONE ${responseData}');
       if (responseData["statusCode"] == 200) {
         // if (!true) {
         //   if (responseData["isverified"]) {
@@ -122,8 +123,11 @@ print("body" '$body');
 
       http.StreamedResponse responses = await request.send();
       var response = await http.Response.fromStream(responses);
+      print('response fisrt ${response}');
       Map<String, dynamic> responseData = json.decode(response.body);
+      print("hellooooooo: ${responseData}");
       if (responseData["statusCode"] == 200) {
+
         // if (!true) {
         //   if (responseData["isverified"]) {
         //     return responseData["data"];

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yallajeye/Services/ApiLink.dart';
 import 'package:yallajeye/Services/ServiceAPi.dart';
@@ -52,6 +53,7 @@ class UserProvider with ChangeNotifier {
   TextEditingController emailChat = TextEditingController();
 
   TextEditingController loyatlypoint = TextEditingController();
+  String dateTimeRandom = DateTime(1996,04,01).toString().split(' ').first;
 
   clearControllers() {
     password.clear();
@@ -217,6 +219,7 @@ class UserProvider with ChangeNotifier {
       return true;
     }
   }
+
   signUp(File image)async{
     String tokenFire = await FirebaseMessaging.instance.getToken();
     // FirebaseMessaging.instance.getToken().then((tokenFire) async {
@@ -226,6 +229,8 @@ class UserProvider with ChangeNotifier {
       if (image != null) {
         imageList.add(image);
       }
+      print(birthday.text);
+      print('DATE DATE DATE');
       allData = await _serviceAPi.postAPiUser(ApiLink.Register, {
         'Email': email.text.toString(),
         'Password': password.text.toString(),
@@ -233,8 +238,8 @@ class UserProvider with ChangeNotifier {
         'Name': name.text.toString(),
         'GenderId': genderId.id.toString(),
         'PhoneNumber': phoneNumber.text.toString(),
-        'Birthdate': birthday.text.toString(),
-        'DeviceToken': tokenFire ?? ""
+        'Birthdate': birthday.text.isEmpty ?dateTimeRandom : birthday.text.toString(),
+        'DeviceToken': tokenFire ??''
       }, imageList, {}, false);
       print("requseee" '$allData');
       if (allData["error"] != null) {
@@ -300,7 +305,7 @@ class UserProvider with ChangeNotifier {
     }
   }
 
-  List<Gender> genderIdList = [Gender(1, "Male"), Gender(2, "Female")];
+  List<Gender> genderIdList = [Gender(1, "Male"), Gender(2, "Female"),Gender(3, "Rather not to say")];
 
   Future<bool> forgetpassword() async {
     allData = await _serviceAPi.postAPi(
