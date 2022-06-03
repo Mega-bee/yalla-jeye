@@ -88,6 +88,7 @@ class _CustomOrderState extends State<CustomOrder> {
           appBar: AppBar(
               leading: IconButton(
             onPressed: () {
+              user.status==Status.isVerified?
               showDialog(
                   context: context,
                   builder: (context) => CustomAlertDialog(
@@ -97,7 +98,9 @@ class _CustomOrderState extends State<CustomOrder> {
                       confrimBtnFn: () {
                         Navigator.pop(context);
                         Navigator.of(context).pop();
-                      }));
+                      })):
+              Navigator.pop(context);
+              ;
             },
             icon: Icon(
               Icons.arrow_back,

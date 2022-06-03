@@ -522,7 +522,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       !isLoading
                           ? ElevatedButton(
                               onPressed: () async {
-                                if (!formkey.currentState.validate() || authProvider.name.text.isEmpty||authProvider.phoneNumber.text.isEmpty||authProvider.gender.text.isEmpty||authProvider.birthday.text.isEmpty) {
+                                if (!formkey.currentState.validate() || authProvider.name.text.isEmpty||authProvider.phoneNumber.text.isEmpty||authProvider.gender.text.isEmpty) {
                                   Fluttertoast.showToast(
                                       msg: "Please fill all the fields",
                                       fontSize: 15,
