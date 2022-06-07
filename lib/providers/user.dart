@@ -307,9 +307,11 @@ class UserProvider with ChangeNotifier {
 
   List<Gender> genderIdList = [Gender(1, "Male"), Gender(2, "Female"),Gender(3, "Rather not to say")];
 
-  Future<bool> forgetpassword() async {
+  Future<bool> forgetpasswordWithPhone(String phoneNumber) async {
     allData = await _serviceAPi.postAPi(
-        ApiLink.ForgetPassword, [], {}, [], {}, false);
+        ApiLink.ForgetPasswordWithPhone, [], {
+          "identifier":phoneNumber
+    }, [], {}, false);
     if (allData["error"] != null) {
       print("${allData["error"]}");
       message = allData["error"];
@@ -339,6 +341,26 @@ class UserProvider with ChangeNotifier {
           'OldPassword': oldPassword.text,
           'NewPassword': password.text,
           'ConfirmPassword': confirmpassword.text
+        },
+        [],
+        {},
+        false);
+    if (allData["error"] != null) {
+      print("${allData["error"]}");
+      message = allData["error"];
+      return false;
+    } else {
+      return true;
+    }
+  }
+  Future<bool> SetNewPasswordWithPhone(String phone ,String pass ,String confirmPass) async {
+    allData = await _serviceAPi.postAPi(
+        ApiLink.resetPasswordPhone,
+        [],
+        {
+          'PhoneNumber': phone,
+          'NewPassword': pass,
+          'ConfirmPassword':confirmPass
         },
         [],
         {},

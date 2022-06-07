@@ -6,25 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:yallajeye/constants/colors_textStyle.dart';
 import 'package:yallajeye/screens/auth/reset-password.dart';
+import 'package:yallajeye/screens/auth/signin_screen.dart';
 
 import '../../providers/user.dart';
 
-// import 'package:yallajeyi/api_services/api_call.dart';
-// import 'package:yallajeyi/constants/colors.dart';
-// import 'package:yallajeyi/widgets/build-dialog-reset-password.dart';
-// import 'package:yallajeyi/widgets/build_show_dialog.dart';
-//
-// import 'mail-sent.dart';
 
-class ChangePassword extends StatefulWidget {
+class SetNewPassword extends StatefulWidget {
+  final String phoneNumber;
+
+  SetNewPassword(this.phoneNumber);
+
   @override
-  _ChangePasswordState createState() => _ChangePasswordState();
+  _SetNewPasswordState createState() => _SetNewPasswordState();
 }
 
-class _ChangePasswordState extends State<ChangePassword> {
+class _SetNewPasswordState extends State<SetNewPassword> {
   bool _isLoading = false;
-  TextEditingController oldPassController = TextEditingController();
-  TextEditingController newPassController = TextEditingController();
+   TextEditingController newPassController = TextEditingController();
   TextEditingController confirmPassController = TextEditingController();
   final _formkey = GlobalKey<FormState>();
   var _newpassword = "";
@@ -63,7 +61,7 @@ class _ChangePasswordState extends State<ChangePassword> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Change Password",
+          "Set new Password",
           style: st20Bold,
         ),
         iconTheme: IconThemeData(color: yellowColor),
@@ -76,41 +74,7 @@ class _ChangePasswordState extends State<ChangePassword> {
             child: Column(
               children: [
                 TextFormField(
-                  controller: authProvider.oldPassword,
-                  decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          obscure1 ? Icons.visibility : Icons.visibility_off,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            obscure1 = !obscure1;
-                          });
-                        },
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 25, horizontal: 25),
-                      hintText: "Enter Old Password",
-                      hintStyle: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'BerlinSansFB',
-                          color: Color(0xFF878787)),
-                      errorBorder: border,
-                      focusedErrorBorder: border,
-                      border: OutlineInputBorder(),
-                      enabledBorder: border,
-                      focusedBorder: border),
-                  obscureText: obscure1,
-                  obscuringCharacter: "*",
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                TextFormField(
-                  controller: authProvider.password,
+                  controller: newPassController,
                   obscuringCharacter: "*",
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
@@ -162,7 +126,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   height: 15,
                 ),
                 TextFormField(
-                  controller: authProvider.confirmpassword,
+                  controller: confirmPassController,
                   decoration: InputDecoration(
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -226,14 +190,14 @@ class _ChangePasswordState extends State<ChangePassword> {
                               });
                               validateText();
                               var resetPassword =
-                              await authProvider.ResetPassword();
+                              await authProvider.SetNewPasswordWithPhone(widget.phoneNumber,newPassController.text,confirmPassController.text);
                               print(resetPassword);
                               if (resetPassword) {
                               print("Reset succeed");
                               setState(() {
                                 _isLoading = false;
                               });
-                              Navigator.of(context).pop();
+                              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_)=>SignInScreen()),(Route<dynamic> route) => false);
                               } else {
                               setState(() {
                                 _isLoading = false;

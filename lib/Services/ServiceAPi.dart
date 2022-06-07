@@ -72,7 +72,7 @@ class ServiceAPi {
       http.StreamedResponse responses = await request.send();
       var response = await http.Response.fromStream(responses);
       Map<String, dynamic> responseData = json.decode(response.body);
-      print('URL ${responseData}');
+      print('URL ${link}');
       print('RESPONE ${responseData}');
       if (responseData["statusCode"] == 200) {
         // if (!true) {

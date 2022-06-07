@@ -4,7 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:yallajeye/screens/auth/phone_verification.dart';
 import 'package:yallajeye/screens/auth/reset-password-email.dart';
+import 'package:yallajeye/screens/auth/signin_screen.dart';
 
 import '../../providers/user.dart';
 
@@ -95,7 +97,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   height: screenHeight * 0.05,
                   child: FittedBox(
                     child: Text(
-                      'In order to reset you password, please\nenter the email address you used to sign in',
+                      'In order to reset you password, please\nenter the phone number you used to sign in',
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.normal,
@@ -119,6 +121,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           child: Column(children: [
                             TextFormField(
                               controller: emailController,
+                              maxLength: 8,
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
@@ -130,8 +133,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                     left: screenHeight * 0.03,
                                     bottom: screenHeight * 0.03,
                                     top: screenHeight * 0.03),
-                                hintText: 'Email',
-                                hintStyle: TextStyle(
+                                hintText: 'Phone',
+                                 hintMaxLines: 8,
+                                 hintStyle: TextStyle(
                                   fontSize: 15,
                                   fontFamily: 'BerlinSansFB',
                                   fontWeight: FontWeight.w600,
@@ -140,19 +144,19 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                               ),
                               validator: MultiValidator([
                                 RequiredValidator(errorText: 'Required *'),
-                                EmailValidator(errorText: 'Not a valid email'),
                               ]),
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
-                              keyboardType: TextInputType.emailAddress,
+                              keyboardType: TextInputType.phone,
                             ),
                           ]),
                         ),
                       ),
                       SizedBox(
-                        height: screenHeight * 0.03,
+                        height: screenHeight * 0.1,
                       ),
-                    _isLoading?CircularProgressIndicator():  ElevatedButton(
+                    _isLoading?CircularProgressIndicator():
+                    ElevatedButton(
                         onPressed: ()async {
                           setState(() {
                             _isLoading = true;
@@ -170,7 +174,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             });
                             // reset!=null?
                           } else {
-                            if (await authProvider.forgetpassword()) {
+                            if (await authProvider.forgetpasswordWithPhone(emailController.text)) {
                           print("logged");
                           setState(() {
                           _isLoading = false;
@@ -182,10 +186,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
                           builder: (context) =>
-                              ResetPasswordEmailScreen()),
+                              PhoneVerification(emailController.text,true)),
                           );
                           //authProvider.status=Status.Authenticated;
-                          setState(() {});
+//                          setState(() {});
                           } else {
                           print("hello");
                           setState(() {
@@ -203,11 +207,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         },
                         child: Text('Reset'),
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.fromLTRB(
-                              screenHeight * 0.05,
-                              screenHeight * 0.04,
-                              screenHeight * 0.05,
-                              screenHeight * 0.04),
+                          padding: EdgeInsets.all(25),
                           onPrimary: Color.fromRGBO(254, 212, 48, 1),
                           primary: Color.fromRGBO(51, 51, 51, 1),
                           shape: new RoundedRectangleBorder(
