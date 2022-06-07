@@ -231,10 +231,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           child: Column(children: [
                             TextFormField(
                               controller: authProvider.phoneNumber,
+                              maxLength: 8,
                               // onSaved: (value) => email = value,
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
+
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide.none,
                                   borderRadius: BorderRadius.circular(15.0),
@@ -549,7 +551,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           builder: (_) =>
                                               PhoneVerification(
                                                   authProvider.phoneNumber
-                                                      .text),
+                                                      .text,false),
                                         ),
                                       );
 

@@ -59,6 +59,7 @@ class _SignInScreenState extends State<SignInScreen> {
     return null;
   }
   final loginkey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<UserProvider>(context, listen: true);
@@ -110,6 +111,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             child: Column(children: [
                               TextFormField(
                                 controller: authProvider.email,
+                                maxLength: 8,
                                 // onSaved: (value) => email = value,
                                 decoration: InputDecoration(
                                   filled: true,
@@ -187,66 +189,32 @@ class _SignInScreenState extends State<SignInScreen> {
                         SizedBox(
                           height: screenHeight * 0.02,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // const FittedBox(
-                            //   child: Padding(
-                            //     padding: EdgeInsets.only(left:8.0),
-                            //     child: Text(
-                            //       'Verify',
-                            //       style: TextStyle(
-                            //         decoration: TextDecoration.underline,
-                            //         fontWeight: FontWeight.w900,
-                            //         fontFamily: 'BerlinSansFB',
-                            //         color: Colors.black,
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Center(
-                                  child: FittedBox(
-                                    child: Text(
-                                      'Forgot password?',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w900,
-                                        fontFamily: 'BerlinSansFB',
-                                        color: Colors.black,
-                                      ),
-                                    ),
+                        Center(
+                          child: InkWell(
+                            onTap: (){
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ResetPasswordScreen()));
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: FittedBox(
+                                child: Text(
+                                  'Forgot password ?',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w900,
+                                    fontFamily: 'BerlinSansFB',
+                                    color: Colors.black,
                                   ),
                                 ),
-                                Container(
-                                  child: InkWell(
-                                    child:const FittedBox(
-                                      child: Text(
-                                        ' Reset',
-                                        style: TextStyle(
-                                          decoration: TextDecoration.underline,
-                                          fontWeight: FontWeight.w900,
-                                          fontFamily: 'BerlinSansFB',
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ResetPasswordScreen()));
-                                    },
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                          ],
+                          ),
                         ),
                         SizedBox(
-                          height: screenHeight * 0.02,
+                          height: screenHeight * 0.1,
                         ),
                         Container(
                           child: _isLoading
@@ -256,10 +224,6 @@ class _SignInScreenState extends State<SignInScreen> {
                               setState(() {
                                 _isLoading = true;
                               });
-                              // final SharedPreferences sharedPreferences =
-                              //     await SharedPreferences.getInstance();
-                              // sharedPreferences.setString(
-                              //     'email', emailController.text);
 
                               if (formkey.currentState.validate() == false) {
                                 // ignore: avoid_print
@@ -333,83 +297,6 @@ class _SignInScreenState extends State<SignInScreen> {
                         SizedBox(
                           height: screenHeight * 0.03,
                         ),
-                        // Container(
-                        //   child: ElevatedButton.icon(
-                        //     onPressed: ()async{
-                        //      await authProvider.googleLogin();
-                        //      final user=FirebaseAuth.instance.currentUser;
-                        //      print("Image is ${user.photoURL}");
-                        //      print(authProvider.idToken);
-                        //
-                        //      if(user.email!=null){
-                        //
-                        //        Navigator.of(context).pushAndRemoveUntil(
-                        //            MaterialPageRoute(
-                        //                builder: (context) =>
-                        //                    Navigation()),
-                        //                (Route<dynamic> route) => false);
-                        //      }
-                        //
-                        //     },
-                        //     // singInGoogle,
-                        //     label: Text(' Sign in with Google'),
-                        //     style: ElevatedButton.styleFrom(
-                        //       padding: EdgeInsets.fromLTRB(
-                        //           screenHeight * 0.02,
-                        //           screenHeight * 0.02,
-                        //           screenHeight * 0.04,
-                        //           screenHeight * 0.02),
-                        //       onPrimary: Color.fromRGBO(255, 255, 255, 1),
-                        //       primary: Color.fromRGBO(232, 47, 28, 1),
-                        //       shape: new RoundedRectangleBorder(
-                        //         borderRadius: new BorderRadius.circular(15.0),
-                        //       ),
-                        //     ),
-                        //     icon: Icon(
-                        //       FontAwesomeIcons.google,
-                        //       size: 17,
-                        //     ),
-                        //   ),
-                        // ),
-                        // SizedBox(
-                        //   height: screenHeight * 0.03,
-                        // ),
-                        // Container(
-                        //   child: ElevatedButton.icon(
-                        //     onPressed:()async {
-                        //      bool success;
-                        //     success=  await authProvider.signInWithFacebook();
-                        //     if(success){
-                        //       Navigator.of(context).pushAndRemoveUntil(
-                        //           MaterialPageRoute(
-                        //               builder: (context) =>
-                        //                   Navigation()),
-                        //               (Route<dynamic> route) => false);
-                        //     }
-                        //     },
-                        //     // signInFB,
-                        //     label: Text('Sign in with Facebook'),
-                        //     style: ElevatedButton.styleFrom(
-                        //       padding: EdgeInsets.fromLTRB(
-                        //           screenHeight * 0.02,
-                        //           screenHeight * 0.02,
-                        //           screenHeight * 0.04,
-                        //           screenHeight * 0.02),
-                        //       onPrimary: Color.fromRGBO(255, 255, 255, 1),
-                        //       primary: Color.fromRGBO(60, 90, 152, 1),
-                        //       shape: new RoundedRectangleBorder(
-                        //         borderRadius: new BorderRadius.circular(15.0),
-                        //       ),
-                        //     ),
-                        //     icon: Icon(
-                        //       FontAwesomeIcons.facebookF,
-                        //       size: 17,
-                        //     ),
-                        //   ),
-                        // ),
-                        // SizedBox(
-                        //   height: screenHeight * 0.03,
-                        // ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -462,132 +349,4 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
-
-  // doSignIN(BuildContext context) async {
-  //   if (!formkey.currentState.validate()) {
-  //     return;
-  //   } else {
-  //     FocusScope.of(context).unfocus();
-  //     try {
-  //       formkey.currentState.save();
-  //       setState(() {
-  //         _isLoading = true;
-  //       });
-  //       _hasInternet = await InternetConnectionChecker().hasConnection;
-  //       if (_hasInternet == false) {
-  //         // showSimpleNotification(Text(
-  //         //   'No internet Connection',
-  //         //   textAlign: TextAlign.center,
-  //         // ));
-  //         _isLoading = false;
-  //         return;
-  //       }
-  //       // User response = await ApiCall().login(email: email, password: password);
-  //       print('bl signIN');
-  //       // print(response);
-  //       // print(response.name);
-  //       // print('type of user is:${response.role}');
-  //       // if (response.role == 'Driver') {
-  //       //   await Navigator.of(context).pushReplacement(
-  //       //       MaterialPageRoute(builder: (context) => NavigationScreen()));
-  //       // } else {
-  //       //   await Navigator.of(context).pushReplacement(
-  //       //       MaterialPageRoute(builder: (context) => MainScreen()));
-  //       //
-  //       //   // print('phoneNumber:${response.phoneNumber}');
-  //       // }
-  //
-  //       setState(() {
-  //         _isLoading = false;
-  //       });
-  //     } on HttpException catch (e) {
-  //       print('in http exception');
-  //       var errorMessage = 'Authentication failed';
-  //       if (e.toString().contains("User doesn't exist")) {
-  //         errorMessage = "user doesn't exist";
-  //         buildShowDialog(context, errorMessage);
-  //         setState(() {
-  //           _isLoading = false;
-  //         });
-  //       } else if (e.toString().contains("Login failed, user doesn't exist")) {
-  //         errorMessage = "user doesn't exist";
-  //         buildShowDialog(context, errorMessage);
-  //         setState(() {
-  //           _isLoading = false;
-  //         });
-  //       } else if (e.toString().contains("Wrong password")) {
-  //         errorMessage = "wrong password";
-  //         buildShowDialog(context, errorMessage);
-  //         setState(() {
-  //           _isLoading = false;
-  //         });
-  //       } else {
-  //         buildShowDialog(context, errorMessage);
-  //         setState(() {
-  //           _isLoading = false;
-  //         });
-  //       }
-  //     } on SocketException {
-  //       print('hello');
-  //       String errorMessage = 'No internet connection';
-  //       throw errorMessage;
-  //     } catch (error) {
-  //       print('hola');
-  //       print(error);
-  //       var errorMessage = 'please try again later';
-  //
-  //       buildShowDialog(context, "couldn't sign in,try again later");
-  //
-  //       setState(() {
-  //         _isLoading = false;
-  //         //
-  //       });
-  //     }
-  //   }
-  // }
-//
-//   Future singInGoogle() async {
-//     final user = await GoogleSignInApi.loginR();
-//     if (user == null) {
-//       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-//         content: Text("Sign in failed"),
-//       ));
-//     } else {
-//       // Navigator.of(context).pushReplacement(MaterialPageRoute(
-//       //     builder: (context) => LoggedInPage(
-//       //           user: user,
-//       //         )));
-//       Navigator.of(context).pushReplacement(MaterialPageRoute(
-//           builder: (context) => GoogleProfileScreen(user: user
-//           )));
-//       // Navigator.of(context).pushReplacement(MaterialPageRoute(
-//       //     builder: (context) => PrintScreen(
-//       //     )));
-//     }
-//   }
-//
-//
-//
-//
-//   Future<void> signInFB() async {
-//     final result = await FacebookSignInApi.logIn();
-//     // by default we request the email and the public profile
-// // or FacebookAuth.i.login()
-//     if (result.status != LoginStatus.success) {
-//       print("Status: ${result.status}");
-//       print("Message: ${result.message}");
-//       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-//         content: Text("Sign in with facebook failed"),
-//       ));
-//     } else {
-//       // you are logged
-//       final AccessToken accessToken = result.accessToken;
-//
-//       // Navigator.of(context)
-//       //     .pushReplacement(MaterialPageRoute(builder: (_) => FacebookLogin(accessToken)));
-//       Navigator.of(context)
-//           .pushReplacement(MaterialPageRoute(builder: (_) => FacebookProfileScreen(accessToken:accessToken)));
-//     }
-//   }
-
 }

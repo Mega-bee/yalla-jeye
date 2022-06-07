@@ -13,6 +13,7 @@ class ApiLink {
   static String getAllAddresses=host+"addresses/GetAllAddresses";
   static String placeOrder=host+"orders/placeorder";
   static String ForgetPassword=host+"Accounts/ForgetPassword";
+  static String ForgetPasswordWithPhone=host+"Accounts/ForgetPasswordWithPhoneNumber";
   static String ResetPassword=host+"Accounts/ResetPassword";
   static String GetUserProfile=host+"Accounts/GetUserProfile";
   static String UpdateProfile=host+"Accounts/UpdateProfile";
@@ -29,6 +30,9 @@ class ApiLink {
   static String confirmAccountOtp=host+"Accounts/ConfirmAccount";
   static String resendOtp=host+"Accounts/ResendOtp";
   static String Notification=host+"Notifications/GetAllNotifications";
+  static String resetPasswordPhone=host+"Accounts/ResetPasswordPhone";
+
+
 
   static String getDriverOrders=host+"Driver/GetDriverOrders";
   static String getDriverOrderDetails=host+"Driver/GetDriverOrder";

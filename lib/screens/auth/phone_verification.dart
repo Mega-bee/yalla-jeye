@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:provider/provider.dart';
 import 'package:yallajeye/providers/user.dart';
+import 'package:yallajeye/screens/auth/set-new-password.dart';
 
 import '../../constants/colors_textStyle.dart';
 
@@ -15,8 +16,9 @@ import '../navigation bar/navigation_bar.dart';
 
 class PhoneVerification extends StatefulWidget {
   final String phoneNumber;
+  final bool isResetPass;
 
-  PhoneVerification(this.phoneNumber); // var _contact;
+  PhoneVerification(this.phoneNumber, this.isResetPass); // var _contact;
 
   @override
   _PhoneVerificationState createState() => _PhoneVerificationState();
@@ -28,8 +30,6 @@ class _PhoneVerificationState extends State<PhoneVerification> {
   String verificationId;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   String errorMessage = '';
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  Timer _timer;
 
   @override
   void initState() {
@@ -45,26 +45,6 @@ class _PhoneVerificationState extends State<PhoneVerification> {
     } catch (e) {
       handleError(e as PlatformException);
       Navigator.pop(context, (e as PlatformException).message);
-    }
-  }
-
-//Method for verify otp entered by user
-  Future<void> verifyOtp() async {
-    if (smsOTP == null || smsOTP == '') {
-      showAlertDialog(context, 'please enter 4 digit otp');
-      return;
-    }
-    try {
-      final AuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verificationId,
-        smsCode: smsOTP,
-      );
-      final UserCredential user = await _auth.signInWithCredential(credential);
-      final User currentUser = await _auth.currentUser;
-
-      print("verification failed");
-    } catch (e) {
-      print(e.toString());
     }
   }
 
@@ -205,26 +185,31 @@ class _PhoneVerificationState extends State<PhoneVerification> {
                         );
                       bool otpVerify=  await auth.confirmOtp(widget.phoneNumber,value);
                       if(otpVerify){
-                        bool confirmAccount=  await auth.confirmAccountOtp(widget.phoneNumber);
-                        if(confirmAccount){
-                          // auth.status=Status.isVerified;
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      Navigation()),
-                                  (Route<dynamic> route) => false);
-                        }else{
-                          Fluttertoast.showToast(
-                              msg: 'otp not valid',
-                              fontSize: 15,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 2,
-                              textColor: Colors.white,
-                              backgroundColor: redColor,
-                              toastLength: Toast.LENGTH_SHORT
-                          );
+                        if(widget.isResetPass){
+                          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder:(context)=> SetNewPassword(widget.phoneNumber)), (route) => false);
                         }
-
+                       else {
+                          bool confirmAccount = await auth.confirmAccountOtp(
+                              widget.phoneNumber);
+                          if (confirmAccount) {
+                            // auth.status=Status.isVerified;
+                            Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        Navigation()),
+                                    (Route<dynamic> route) => false);
+                          } else {
+                            Fluttertoast.showToast(
+                                msg: 'otp not valid',
+                                fontSize: 15,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 2,
+                                textColor: Colors.white,
+                                backgroundColor: redColor,
+                                toastLength: Toast.LENGTH_SHORT
+                            );
+                          }
+                        }
 
                       }else{
                         Fluttertoast.showToast(
