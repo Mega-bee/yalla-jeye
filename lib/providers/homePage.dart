@@ -1,12 +1,22 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart' as loc;
+import 'package:rxdart/rxdart.dart';
 import 'package:yallajeye/Services/ApiLink.dart';
 import 'package:yallajeye/Services/HomePage.dart';
 import 'package:yallajeye/Services/ServiceAPi.dart';
 import 'package:yallajeye/models/home_page.dart';
+import 'package:geocoding/geocoding.dart';
 
 class HomePageProvider extends ChangeNotifier {
   HomePageService _homePageService = HomePageService();
   ServiceAPi _serviceAPi=ServiceAPi();
+
+  static final PublishSubject<String> _currentLoc =
+  PublishSubject<String>();
+  Stream<String> get currentLocStream => _currentLoc.stream;
+
   List<Ads> _services = [];
 
   List<Ads> get services => _services;
@@ -45,6 +55,17 @@ List<Restaurants> _restaurants=[];
   set itemTypes(List<ItemTypes> value) {
     _itemTypes = value;
   }
+  bool _loading = true;
+
+  bool get loading => _loading;
+
+  set loading(bool value) {
+    _loading = value;
+  }
+
+
+
+
 
   // List<ItemTypes> _selectedItem=[];
   //
@@ -81,6 +102,7 @@ List<Restaurants> _restaurants=[];
   // }
 
   getHomePage() async{
+    loading = true;
     allData=await _serviceAPi.getAPi(ApiLink.HomePage, [], {});
     if(allData["error"]!=null){
       print(allData["error"]);
@@ -94,6 +116,41 @@ List<Restaurants> _restaurants=[];
       itemTypes = List<ItemTypes>.from(
           allData["data"]["itemTypes"].map((model) => ItemTypes.fromJson(model)));
     }
+    loading = false;
     notifyListeners();
+  }
+
+  defaultLocation() async {
+    loc.Location locationF =   loc.Location();
+    bool _serviceEnabled;
+    loc.PermissionStatus _permissionGranted;
+    loc.LocationData _locationData;
+
+    _serviceEnabled = await locationF.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await locationF.requestService();
+      if (!_serviceEnabled) {
+        return null;
+      }
+    }
+
+    _permissionGranted = await locationF.hasPermission();
+    if (_permissionGranted == loc.PermissionStatus.denied) {
+      _permissionGranted = await locationF.requestPermission();
+      if (_permissionGranted != loc.PermissionStatus.granted) {
+        return null;
+      }
+    }
+    var myLocation = await loc.Location.instance.getLocation();
+    LatLng myPos = LatLng(myLocation.latitude ?? 0, myLocation.longitude ?? 0);
+
+    print("Mypos {$myPos}");
+
+//    List<Placemark> placemarks = await placemarkFromCoordinates(52.2165157, 6.9437819);
+    List<Placemark> newPlace = await GeocodingPlatform.instance.placemarkFromCoordinates(myPos.latitude, myPos.longitude,localeIdentifier: "en");
+
+    print(newPlace[0].locality  + newPlace[0].subLocality +newPlace[0].thoroughfare );
+    _currentLoc.add(newPlace[0].locality+' '+newPlace[0].thoroughfare );
+
   }
 }

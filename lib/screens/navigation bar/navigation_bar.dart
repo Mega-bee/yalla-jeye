@@ -27,6 +27,9 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
+  HomePageProvider homePage;
+  String yourLocation = '';
+
   final screens = [
     HomeScreen(),
     RestaurantsScreen(),
@@ -53,20 +56,38 @@ class _NavigationState extends State<Navigation> {
   ];
   int screenNum = 0;
 //
-  getData() async {
-    final homePage = Provider.of<HomePageProvider>(context, listen: false);
-    await homePage.getHomePage();
-  }
+  var mediaQuery;
+  double width ;
+//  getData() async {
+//    final homePage = Provider.of<HomePageProvider>(context, listen: false);
+//    await homePage.getHomePage();
+//  }
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
 
   @override
   void initState() {
-    init();
-    getData();
-    LocalNotificationService.initialize(context);
     super.initState();
+   homePage = Provider.of<HomePageProvider>(context, listen: false);
+    init();
+    LocalNotificationService.initialize(context);
+    homePage.currentLocStream.listen((event) {
+      yourLocation = event;
+      if(mounted)
+    {
+      setState(() {
+
+      });
+    }
+    });
+  }
+
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
   }
 
   Future<void> init() async {
@@ -110,8 +131,8 @@ class _NavigationState extends State<Navigation> {
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context).size;
-    double width = mediaQuery.width;
+    mediaQuery = MediaQuery.of(context).size;
+    width = mediaQuery.width;
     Future<bool> onBackPressed() {
       return showDialog(
           context: context,
@@ -130,6 +151,10 @@ class _NavigationState extends State<Navigation> {
           title: appBarLeading[screenNum],
           elevation: 0,
           actions: [
+            Padding(
+              padding: const EdgeInsetsDirectional.only(top: 20) ,
+              child: Text(yourLocation),
+            ),
             IconButton(
               onPressed: () {
                 Navigator.of(context)
@@ -137,7 +162,8 @@ class _NavigationState extends State<Navigation> {
               },
               icon: const Icon(FontAwesomeIcons.shoppingCart),
               color: yellowColor,
-            )
+            ),
+
           ],
         ),
         body: screens[screenNum],

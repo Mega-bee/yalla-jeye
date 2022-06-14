@@ -72,6 +72,8 @@ dependencies:
   url_launcher: ^6.1.1
   custom_info_window: ^1.0.1
   loading_indicator:
+  rxdart:
+
 #  device_preview: ^0.7.0
 
 flutter_icons:
