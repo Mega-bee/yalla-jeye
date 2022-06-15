@@ -19,123 +19,39 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int activeIndex1;
   int activeIndex2;
-  HomePageProvider homePage ;
+  HomePageProvider homePage;
+  var mediaQueryHeight;
+  var mediaQueryWidth;
+
+  getData() async {
+    await homePage.getHomePage();
+    await homePage.defaultLocation();
+
+  }
   @override
   void initState() {
+    super.initState();
+    homePage = Provider.of<HomePageProvider>(context, listen: false);
     activeIndex1 = 0;
     activeIndex2 = 0;
-    super.initState();
+    getData();
   }
+
 
   @override
   Widget build(BuildContext context) {
+    mediaQueryHeight = MediaQuery.of(context).size.height;
+    mediaQueryWidth = MediaQuery.of(context).size.width;
     homePage = Provider.of<HomePageProvider>(context, listen: true);
-    var mediaQueryHeight = MediaQuery.of(context).size.height;
-    var mediaQueryWidth = MediaQuery.of(context).size.width;
-    Widget buildAdsService(Ads ads, int index) => InkWell(
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) =>
-                    AdsDetails(ads.title, ads.description, ads.imageUrl)));
-          },
-          child: Card(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(20),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: mediaQueryHeight * 0.25,
-                  child: Image.network(
-
-                    ads.imageUrl,
-                    loadingBuilder: (BuildContext context,
-                        Widget child,
-                        ImageChunkEvent loadingProgress) {
-                      if (loadingProgress == null)
-                        return child;
-                      return Padding(
-                        padding:
-                        const EdgeInsets.all(25.0),
-                        child: Center(
-                          child:
-                          CircularProgressIndicator(
-                            color: Colors.red,
-                            value: loadingProgress
-                                .expectedTotalBytes !=
-                                null
-                                ? loadingProgress
-                                .cumulativeBytesLoaded /
-                                loadingProgress
-                                    .expectedTotalBytes
-                                : null,
-                          ),
-                        ),
-                      );
-                    },
-                    height: MediaQuery.of(context).size.height * 0.25,
-                    width: double.infinity,
-                    errorBuilder: (BuildContext context, Object exception,
-                        StackTrace stackTrace) {
-                      return Image.asset(
-                        'assets/images/logo.png',
-                        height: MediaQuery.of(context).size.height * 0.25,
-                      );
-                    },
-                  ),
-                ),
-                Padding(
-                    padding: EdgeInsets.only(
-                        top: mediaQueryHeight * 0.005,
-                        left: mediaQueryWidth * 0.03),
-                    child: Text(
-                      ads.title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
-                        fontFamily: 'BerlinSansFB',
-                      ),
-                    ))
-              ],
-            ),
-          ),
-        );
-
-    Widget buildIndicator1() => AnimatedSmoothIndicator(
-          activeIndex: activeIndex1,
-          count: homePage.services.length,
-          effect: const ScrollingDotsEffect(
-            activeDotColor: redColor,
-            dotColor: yellowColor,
-            dotHeight: 5,
-            dotWidth: 5,
-          ),
-        );
-    Widget buildIndicator2() => AnimatedSmoothIndicator(
-          activeIndex: activeIndex2,
-          count: homePage.other.length,
-          effect: const ScrollingDotsEffect(
-            activeDotColor: redColor,
-            dotColor: yellowColor,
-            dotHeight: 5,
-            dotWidth: 5,
-          ),
-        );
     return Scaffold(
         backgroundColor: Colors.white,
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-            child: homePage.other.isEmpty
-                ? Center(
-                    child: CircularProgressIndicator(
-                      color: redColor,
-                    ),
-                  )
-                : RefreshIndicator(
+            child:
+            homePage.loading ?
+            const  Center(child: CircularProgressIndicator(),):
+            RefreshIndicator(
                     onRefresh: () async {
                       await homePage.getHomePage();
                     },
@@ -144,11 +60,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          homePage.services.isEmpty ?
+                          Image.asset(
+                            'assets/images/logo.png',
+                            height: MediaQuery.of(context).size.height * 0.25,
+                          ):
                           CarouselSlider.builder(
                             itemCount: homePage.services.length,
                             itemBuilder: (context, index, reaIndex) {
                               final list = homePage.services[index];
-                              return buildAdsService(list, index);
+                              return buildAdsService(list);
                             },
                             options: CarouselOptions(
                               onPageChanged: (index, reason) => setState(() {
@@ -173,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             itemCount: homePage.other.length,
                             itemBuilder: (context, index, reaIndex) {
                               final list = homePage.other[index];
-                              return buildAdsService(list, index);
+                              return buildAdsService(list);
                             },
                             options: CarouselOptions(
                               onPageChanged: (index, reason) => setState(() {
@@ -201,4 +122,97 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ));
   }
+
+  Widget buildAdsService(Ads ads) => InkWell(
+    onTap: () {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) =>
+              AdsDetails(ads.title, ads.description, ads.imageUrl)));
+    },
+    child: Card(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(20),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: mediaQueryHeight * 0.25,
+            child: Image.network(
+
+              ads.imageUrl,
+              loadingBuilder: (BuildContext context,
+                  Widget child,
+                  ImageChunkEvent loadingProgress) {
+                if (loadingProgress == null)
+                  return child;
+                return Padding(
+                  padding:
+                  const EdgeInsets.all(25.0),
+                  child: Center(
+                    child:
+                    CircularProgressIndicator(
+                      color: Colors.red,
+                      value: loadingProgress
+                          .expectedTotalBytes !=
+                          null
+                          ? loadingProgress
+                          .cumulativeBytesLoaded /
+                          loadingProgress
+                              .expectedTotalBytes
+                          : null,
+                    ),
+                  ),
+                );
+              },
+              height: MediaQuery.of(context).size.height * 0.25,
+              width: double.infinity,
+              errorBuilder: (BuildContext context, Object exception,
+                  StackTrace stackTrace) {
+                return Image.asset(
+                  'assets/images/logo.png',
+                  height: MediaQuery.of(context).size.height * 0.25,
+                );
+              },
+            ),
+          ),
+          Padding(
+              padding: EdgeInsets.only(
+                  top: mediaQueryHeight * 0.005,
+                  left: mediaQueryWidth * 0.03),
+              child: Text(
+                ads.title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                  fontFamily: 'BerlinSansFB',
+                ),
+              ))
+        ],
+      ),
+    ),
+  );
+
+  Widget buildIndicator1() => AnimatedSmoothIndicator(
+    activeIndex: activeIndex1,
+    count: homePage.services.length,
+    effect: const ScrollingDotsEffect(
+      activeDotColor: redColor,
+      dotColor: yellowColor,
+      dotHeight: 5,
+      dotWidth: 5,
+    ),
+  );
+  Widget buildIndicator2() => AnimatedSmoothIndicator(
+    activeIndex: activeIndex2,
+    count: homePage.other.length,
+    effect: const ScrollingDotsEffect(
+      activeDotColor: redColor,
+      dotColor: yellowColor,
+      dotHeight: 5,
+      dotWidth: 5,
+    ),
+  );
 }
