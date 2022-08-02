@@ -36,24 +36,7 @@ class _NavigationState extends State<Navigation> {
     Notifications(),
     Settings()
   ];
-  final appBarLeading = [
-    Image.asset(
-      'assets/images/logo.png',
-      height: 40,
-    ),
-    Text(
-      "Restaurants",
-      style: appBarText,
-    ),
-    Text(
-      "Notifications",
-      style: appBarText,
-    ),
-    Text(
-      "Settings",
-      style: appBarText,
-    )
-  ];
+  var appBarLeading = [];
   int screenNum = 0;
 //
   var mediaQuery;
@@ -69,6 +52,24 @@ class _NavigationState extends State<Navigation> {
   @override
   void initState() {
     super.initState();
+    appBarLeading = [
+      Padding(
+        padding: const EdgeInsetsDirectional.only(top: 20) ,
+        child: Text(yourLocation),
+      ),
+      Text(
+        "Restaurants",
+        style: appBarText,
+      ),
+      Text(
+        "Notifications",
+        style: appBarText,
+      ),
+      Text(
+        "Settings",
+        style: appBarText,
+      )
+    ];
    homePage = Provider.of<HomePageProvider>(context, listen: false);
     init();
     LocalNotificationService.initialize(context);
@@ -151,10 +152,7 @@ class _NavigationState extends State<Navigation> {
           title: appBarLeading[screenNum],
           elevation: 0,
           actions: [
-            Padding(
-              padding: const EdgeInsetsDirectional.only(top: 20) ,
-              child: Text(yourLocation),
-            ),
+
             IconButton(
               onPressed: () {
                 Navigator.of(context)

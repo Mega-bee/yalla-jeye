@@ -232,7 +232,7 @@ class UserProvider with ChangeNotifier {
       print(birthday.text);
       print('DATE DATE DATE');
       allData = await _serviceAPi.postAPiUser(ApiLink.Register, {
-        'Email': email.text.toString(),
+//        'Email': email.text.toString(),
         'Password': password.text.toString(),
         'ConfirmPassword': confirmpassword.text.toString(),
         'Name': name.text.toString(),

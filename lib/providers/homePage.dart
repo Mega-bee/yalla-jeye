@@ -114,7 +114,7 @@ List<Restaurants> _restaurants=[];
       restaurants = List<Restaurants>.from(
           allData["data"]["restaurants"].map((model) => Restaurants.fromJson(model)));
       itemTypes = List<ItemTypes>.from(
-          allData["data"]["itemTypes"].map((model) => ItemTypes.fromJson(model)));
+          allData["data"]["destinationPrice"].map((model) => ItemTypes.fromJson(model)));
     }
     loading = false;
     notifyListeners();

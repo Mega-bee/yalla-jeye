@@ -10,7 +10,7 @@ class HomePageModel {
     json['events'] != null ? Events.fromJson(json['events']) : null;
     if (json['itemTypes'] != null) {
       itemTypes = <ItemTypes>[];
-      json['itemTypes'].forEach((v) {
+      json['destinationPrice'].forEach((v) {
         itemTypes.add(ItemTypes.fromJson(v));
       });
     }
@@ -98,14 +98,17 @@ class Ads {
 class ItemTypes {
   int id=0;
   String title="";
+  num price=0;
   bool checked=false;
 
-  ItemTypes();
+//  ItemTypes();
+  ItemTypes(this.title ,this.id ,this.checked ,this.price );
 
   ItemTypes.fromJson(Map<String, dynamic> json) {
     id = json['id']??0;
-    title = json['title']??"";
-    checked=json[checked]??false;
+    title = json['name']??"";
+    price = json['price']??"";
+    checked= false;
   }
 
   // Map<String, dynamic> toJson() {

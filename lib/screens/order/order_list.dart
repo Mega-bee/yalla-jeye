@@ -269,45 +269,9 @@ class _OrderListState extends State<OrderList> {
                                     SizedBox(
                                       height: mediaQuery.height * 0.02,
                                     ),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text.rich(
-                                            TextSpan(
-                                              // text: 'Details:',
-                                              // style: TextStyle(
-                                              //     decoration:
-                                              //         TextDecoration.none,
-                                              //     fontSize:
-                                              //         mediaQuery.height * 0.020,
-                                              //     fontWeight: FontWeight.normal,
-                                              //     fontFamily: 'Berlin Sans'),
-                                              children: <TextSpan>[
-                                                TextSpan(
-                                                  text: order.getOrder[index]
-                                                      .orderDetails,
-                                                  style: TextStyle(
-                                                      decoration:
-                                                          TextDecoration.none,
-                                                      fontSize:
-                                                          mediaQuery.height *
-                                                              0.025,
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      fontFamily:
-                                                          'Berlin Sans'),
-                                                ),
-                                                // can add more TextSpans here...
-                                              ],
-                                            ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                   Row(children:  order.getOrder[index].destenation.map((e) =>Text(e.name +'  ,  ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500 ),)).toList(),),
                                     SizedBox(
-                                      height: mediaQuery.height * 0.025,
+                                      height: 1,
                                     ),
                                     Container(
                                       width: MediaQuery.of(context).size.width *

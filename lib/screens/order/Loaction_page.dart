@@ -259,7 +259,7 @@ class _LocationPState extends State<LocationP> {
 
                                                 PlacedOrder = await order
                                                     .placeOrder(address
-                                                        .addressChoosen.id);
+                                                        .addressChoosen.id,order.selectedOrder);
 
                                                 if (mounted) {
                                                   setState(() {
