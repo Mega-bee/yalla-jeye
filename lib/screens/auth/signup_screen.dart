@@ -404,36 +404,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               height: MediaQuery.of(context).size.height * 0.02,
                               // height: constraints.maxHeight * 0.02,
                             ),
-                            TextFormField(
-                              // onSaved: (value) => phoneNumber = value,
-                              controller: authProvider.email,
-                              validator: MultiValidator([
-                                EmailValidator(errorText: "Not a valid email")
-                              ]),
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white,
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                contentPadding: EdgeInsets.all(15),
-                                hintText: 'Email',
-                                hintStyle: TextStyle(
-                                  fontSize: 15,
-                                  fontFamily: 'BerlinSansFB',
-                                  fontWeight: FontWeight.w600,
-                                  color: Color.fromRGBO(135, 135, 135, 1),
-                                ),
-                              ),
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              keyboardType: TextInputType.emailAddress,
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.02,
-                              //height: constraints.maxHeight * 0.04,
-                            ),
+//                            TextFormField(
+//                              // onSaved: (value) => phoneNumber = value,
+//                              controller: authProvider.email,
+//                              validator: MultiValidator([
+//                                EmailValidator(errorText: "Not a valid email")
+//                              ]),
+//                              decoration: InputDecoration(
+//                                filled: true,
+//                                fillColor: Colors.white,
+//                                border: OutlineInputBorder(
+//                                  borderSide: BorderSide.none,
+//                                  borderRadius: BorderRadius.circular(15.0),
+//                                ),
+//                                contentPadding: EdgeInsets.all(15),
+//                                hintText: 'Email',
+//                                hintStyle: TextStyle(
+//                                  fontSize: 15,
+//                                  fontFamily: 'BerlinSansFB',
+//                                  fontWeight: FontWeight.w600,
+//                                  color: Color.fromRGBO(135, 135, 135, 1),
+//                                ),
+//                              ),
+//                              autovalidateMode:
+//                                  AutovalidateMode.onUserInteraction,
+//                              keyboardType: TextInputType.emailAddress,
+//                            ),
+//                            SizedBox(
+//                              height: MediaQuery.of(context).size.height * 0.02,
+//                              //height: constraints.maxHeight * 0.04,
+//                            ),
                             Container(
                               height: MediaQuery.of(context).size.height / 11,
                               // margin: EdgeInsets.only(bottom: 5),
@@ -634,8 +634,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               },
                             ),
                           ),
+
                         ],
                       ),
+                      SizedBox(height: 30,)
                     ],
                   ),
                 ),

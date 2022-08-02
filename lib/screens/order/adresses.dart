@@ -235,7 +235,7 @@ class _AddressesState extends State<Addresses> {
                                             _isLoading = true;
                                           });
                                           PlacedOrder = await order
-                                              .placeOrder(address.addressChoosen.id);
+                                              .placeOrder(address.addressChoosen.id,order.selectedOrder);
                                           if (!PlacedOrder) {
                                             showDialog(
                                                 context: context,

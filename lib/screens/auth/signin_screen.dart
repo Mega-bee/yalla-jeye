@@ -77,6 +77,20 @@ class _SignInScreenState extends State<SignInScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Container(
+
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        authProvider.clearAllTextController();
+                      },
+                      icon: Icon(
+                        Icons.arrow_back,
+                        size: 41,
+                        color: Color.fromRGBO(254, 212, 48, 1),
+                      ),
+                    ),
+                  ),
                   Row(
                     children: [
                       Container(

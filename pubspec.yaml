@@ -17,7 +17,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.8.0 <3.0.0"
+  sdk: ">=2.8.0 <3.0.5"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -35,7 +35,8 @@ dependencies:
   google_maps_flutter: ^2.1.1
   geolocator:
   geocoding:
-  location:
+  latlong2: ^0.8.0
+  location: ^4.1.1
   form_field_validator:
   font_awesome_flutter:
   flutter_launcher_icons:

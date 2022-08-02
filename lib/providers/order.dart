@@ -4,6 +4,7 @@ import 'package:yallajeye/Services/ServiceAPi.dart';
 import 'package:yallajeye/models/Adresses.dart';
 import 'package:yallajeye/models/order.dart';
 import 'package:yallajeye/models/orderByid.dart';
+import 'package:yallajeye/screens/order/other_order.dart';
 
 import '../models/home_page.dart';
 
@@ -97,13 +98,13 @@ String _messagePlaceOrder="";
     _messagePlaceOrder = value;
   }
 
-  Future<bool> placeOrder(int addressId) async{
+  Future<bool> placeOrder(int addressId ,List<OtherOrder> _listOfObject) async{
     print(selectedTypeId);
+    List jsonList = [];
+    _listOfObject.map((item) => jsonList.add(item.toJson())).toList();
    allData= await _serviceAPi.postAPiRawJson(ApiLink.placeOrder, {
-      "orderDetails": orderDetails.text,
       "addressId": addressId,
-      "itemTypes": selectedTypeId,
-     "other": otherType.text
+     "orderDestination":jsonList
     }, {'Content-Type': 'application/json'}, false);
     if (allData["error"] != null) {
       messagePlaceOrder= allData["error"];
@@ -291,4 +292,5 @@ notifyListeners();
 
 
   }
+  List<OtherOrder> selectedOrder = [];
 }
