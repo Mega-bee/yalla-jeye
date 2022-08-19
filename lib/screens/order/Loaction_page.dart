@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:yallajeye/constants/colors_textStyle.dart';
 import 'package:yallajeye/models/Adresses.dart';
 import 'package:yallajeye/providers/order.dart';
+import 'package:yallajeye/screens/navigation%20bar/navigation_bar.dart';
+import 'package:yallajeye/screens/order/order_list.dart';
 import 'package:yallajeye/screens/order/promoCode.dart';
 import 'package:yallajeye/screens/settings/addresses/create_update_address.dart';
 import 'package:yallajeye/widgets/address_card.dart';
@@ -223,87 +225,121 @@ class _LocationPState extends State<LocationP> {
                         SizedBox(
                           height: 30,
                         ),
-                        Center(
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) =>
-                                          CustomAlertDialogPeter(
-                                            title:
-                                                "Are you sure  you want to order? You can't change the order later",
-                                            content: "",
-                                            cancelBtnFn: () =>
-                                                Navigator.pop(context, false),
-                                            confrimBtnFn: () async {
-                                              print("Loadingg");
+                        Column(
+                          children: [
+                            Center(
+                                child: ElevatedButton(
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) =>
+                                              CustomAlertDialogPeter(
+                                                title:
+                                                    "Are you sure  you want to order? You can't change the order later",
+                                                content: "",
+                                                cancelBtnFn: () =>
+                                                    Navigator.pop(
+                                                        context, false),
+                                                confrimBtnFn: () async {
+                                                  print("Loadingg");
 
-                                              if (address.addressChoosen.id ==
-                                                  0) {
-                                                Fluttertoast.showToast(
-                                                    msg:
-                                                        "Please choose an address",
-                                                    fontSize: 15,
-                                                    gravity:
-                                                        ToastGravity.BOTTOM,
-                                                    timeInSecForIosWeb: 2,
-                                                    textColor: Colors.white,
-                                                    backgroundColor: redColor,
-                                                    toastLength:
-                                                        Toast.LENGTH_SHORT);
-                                              } else {
-                                                setState(() {
-                                                  _isLoading = true;
-                                                });
-                                                // Navigator.of(context).pop();
-
-                                                PlacedOrder = await order
-                                                    .placeOrder(address
-                                                        .addressChoosen.id,order.selectedOrder);
-
-                                                if (mounted) {
-                                                  setState(() {
-                                                    _isLoading = false;
-                                                  });
-                                                  if (!PlacedOrder) {
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return AlertDialog(
-                                                            title: Text(order
-                                                                .messagePlaceOrder),
-                                                          );
-                                                        });
+                                                  if (address
+                                                          .addressChoosen.id ==
+                                                      0) {
+                                                    Fluttertoast.showToast(
+                                                        msg:
+                                                            "Please choose an address",
+                                                        fontSize: 15,
+                                                        gravity:
+                                                            ToastGravity.BOTTOM,
+                                                        timeInSecForIosWeb: 2,
+                                                        textColor: Colors.white,
+                                                        backgroundColor:
+                                                            redColor,
+                                                        toastLength:
+                                                            Toast.LENGTH_SHORT);
                                                   } else {
-                                                    navToPromoCode();
-                                                  }
-                                                }
+                                                    setState(() {
+                                                      _isLoading = true;
+                                                    });
+                                                    // Navigator.of(context).pop();
 
-                                                order.clearFields();
-                                                address.addressChoosen =
-                                                    AddressesModel();
-                                              }
-                                            },
-                                          ));
+                                                    PlacedOrder =
+                                                        await order.placeOrder(
+                                                            address
+                                                                .addressChoosen
+                                                                .id,
+                                                            order
+                                                                .selectedOrder);
+
+                                                    if (mounted) {
+                                                      setState(() {
+                                                        _isLoading = false;
+                                                      });
+                                                      if (!PlacedOrder) {
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                title: Text(order
+                                                                    .messagePlaceOrder),
+                                                              );
+                                                            });
+                                                      } else {
+                                                        order.selectedOrder
+                                                            .clear();
+                                                        navToOrderList();
+                                                      }
+                                                    }
+
+                                                    order.clearFields();
+                                                    address.addressChoosen =
+                                                        AddressesModel();
+                                                  }
+                                                },
+                                              ));
+                                    },
+                                    child: Text("Place Order",
+                                        style: TextStyle(
+                                          color: yellowColor,
+                                          fontFamily: 'BerlinSansFB',
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                        )),
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Color(0xFF333333),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 20, horizontal: 40),
+                                      side: const BorderSide(
+                                          color: Colors.black, width: 1),
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      // backgroundColor: const Color(0xFF333333)),),
+                                    ))),
+                            SizedBox(
+                              height: 25,
+                            ),
+                            TextButton(
+                                onPressed: () {
+                                  if (address.addressChoosen.id == 0) {
+                                    Fluttertoast.showToast(
+                                        msg: "Please choose an address",
+                                        fontSize: 15,
+                                        gravity: ToastGravity.BOTTOM,
+                                        timeInSecForIosWeb: 2,
+                                        textColor: Colors.white,
+                                        backgroundColor: redColor,
+                                        toastLength: Toast.LENGTH_SHORT);
+                                  } else
+                                    navToPromoCode(order);
                                 },
-                                child: Text("Place Order",
-                                    style: TextStyle(
-                                      color: yellowColor,
-                                      fontFamily: 'BerlinSansFB',
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
-                                    )),
-                                style: ElevatedButton.styleFrom(
-                                  primary: Color(0xFF333333),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 20, horizontal: 40),
-                                  side: const BorderSide(
-                                      color: Colors.black, width: 1),
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  // backgroundColor: const Color(0xFF333333)),),
-                                ))),
+                                child: Text(
+                                  'Do you have promo code?',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ))
+                          ],
+                        ),
                       ],
                     ),
             ],
@@ -313,7 +349,60 @@ class _LocationPState extends State<LocationP> {
     );
   }
 
-  void navToPromoCode() {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => PromoCode()));
+  void navToPromoCode(OrderProvider orderProvider) {
+    var _controller = TextEditingController();
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: new Text("Add promo code"),
+            content:   Padding(
+              padding: const EdgeInsetsDirectional.only(top: 8),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.grey.shade100,
+                ),
+                child: TextFormField(
+                  controller:_controller,
+                  maxLines: 1,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.all(25),
+                    hintText: 'write code',
+                  ),
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+               TextButton(
+                child: new Text("Add "),
+                onPressed: () {
+                  orderProvider.promoCode = _controller.text;
+          Navigator.of(context).pop();
+
+          }
+
+              ),
+            ],
+          );
+//    Navigator.push(context, MaterialPageRoute(builder: (_) => PromoCode()));
+  });}
+  void navToOrderList() {
+    Navigator.of(context)
+        .pushAndRemoveUntil(
+        MaterialPageRoute(
+            builder:
+                (context) =>
+                Navigation()),
+            (Route<dynamic>
+        route) =>
+        false);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder:
+                (context) =>
+                OrderList()));
   }
 }

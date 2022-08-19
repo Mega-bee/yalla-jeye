@@ -8,7 +8,7 @@ class HomePageModel {
   HomePageModel.fromJson(Map<String, dynamic> json) {
     events =
     json['events'] != null ? Events.fromJson(json['events']) : null;
-    if (json['itemTypes'] != null) {
+    if (json['destinationPrice'] != null) {
       itemTypes = <ItemTypes>[];
       json['destinationPrice'].forEach((v) {
         itemTypes.add(ItemTypes.fromJson(v));
@@ -98,17 +98,26 @@ class Ads {
 class ItemTypes {
   int id=0;
   String title="";
-  num price=0;
+   List<DestinationPlace> places;
   bool checked=false;
+  num price=0;
 
 //  ItemTypes();
-  ItemTypes(this.title ,this.id ,this.checked ,this.price );
+  ItemTypes(this.title ,this.id ,this.checked ,this.places );
 
   ItemTypes.fromJson(Map<String, dynamic> json) {
     id = json['id']??0;
     title = json['name']??"";
-    price = json['price']??"";
+    if (json['destinationPlace'] != null) {
+      places = <DestinationPlace>[];
+      json['destinationPlace'].forEach((v) {
+        places.add(DestinationPlace.fromJson(v));
+      });
+      places.add(DestinationPlace(12,'other'));
+    }
+
     checked= false;
+    price = json['price']?? 0;
   }
 
   // Map<String, dynamic> toJson() {
@@ -166,4 +175,18 @@ class Restaurants {
   //   data['pdfUrl'] = this.pdfUrl;
   //   return data;
   // }
+
+}
+class DestinationPlace{
+  int id=0;
+  String title="";
+
+
+  DestinationPlace(this.id, this.title,);
+
+  DestinationPlace.fromJson(Map<String, dynamic> json) {
+    id = json['id']??0;
+    title = json['name']??"";
+  }
+
 }

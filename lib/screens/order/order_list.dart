@@ -269,7 +269,19 @@ class _OrderListState extends State<OrderList> {
                                     SizedBox(
                                       height: mediaQuery.height * 0.02,
                                     ),
-                                   Row(children:  order.getOrder[index].destenation.map((e) =>Text(e.name +'  ,  ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500 ),)).toList(),),
+                                   Column(children:  order.getOrder[index].
+                                   destenation.map((e) =>
+                                       Padding(
+                                         padding: const EdgeInsets.all(8.0),
+                                         child: Row(
+                                           children: [
+                                             Text(e.name +': ',
+                                               style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold ),),
+                                             Text(e.location,
+                                              ),
+                                           ],
+                                         ),
+                                       )).toList(),),
                                     SizedBox(
                                       height: 1,
                                     ),
@@ -296,11 +308,7 @@ class _OrderListState extends State<OrderList> {
                                                   TextSpan(
                                                     // text: _liststatus[index].price,
                                                     // text:'${orderList[index].orders[index].deliveryPrice}',
-                                                    text: order.getOrder[index]
-                                                                .deliveryPrice ==
-                                                            0
-                                                        ? 'Price Not Set'
-                                                        : '${order.getOrder[index].deliveryPrice} L.L',
+                                                    text: '${order.getOrder[index].deliveryPrice} L.L',
                                                     style: TextStyle(
                                                         decoration:
                                                             TextDecoration.none,

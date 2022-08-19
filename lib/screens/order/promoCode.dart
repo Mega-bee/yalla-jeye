@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:yallajeye/constants/colors_textStyle.dart';
 import 'package:yallajeye/providers/order.dart';
+import 'package:yallajeye/screens/order/order_list.dart';
 
 import '../../models/Adresses.dart';
 import '../../providers/address.dart';
@@ -38,8 +39,6 @@ class _PromoCodeState extends State<PromoCode> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-
-          automaticallyImplyLeading: false,
           title: Text(
             "Order Created",
             style: appBarText,
@@ -140,6 +139,27 @@ class _PromoCodeState extends State<PromoCode> {
                                     setState(() {
                                       _isloading = false;
                                     });
+                                    if(done){
+                                      order.selectedOrder
+                                          .clear();
+                                      Navigator.of(context)
+                                          .pushAndRemoveUntil(
+                                          MaterialPageRoute(
+                                              builder:
+                                                  (context) =>
+                                                  Navigation()),
+                                              (Route<dynamic>
+                                          route) =>
+                                          false)
+                                          .then((value) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder:
+                                                    (context) =>
+                                                    OrderList()));
+                                      });
+                                    }
                                   }
                                 },
                                 child: const Text('Redeem',
@@ -169,30 +189,7 @@ class _PromoCodeState extends State<PromoCode> {
             ),
           ),
         ),
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.only(bottom: 20),
-          child: ElevatedButton(onPressed: (){
-            Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                    builder: (context) =>
-                        Navigation()),
-                    (Route<dynamic> route) => false);
-          },child:const Text("Finish",style: TextStyle(
-            color: yellowColor,
-            fontFamily: 'BerlinSansFB',
-            fontWeight: FontWeight.bold,
-            fontSize: 15,
-          )),style: ElevatedButton.styleFrom(
-            primary: Color(0xFF333333),
-              padding: EdgeInsets.symmetric(
-                  vertical: 20, horizontal: 40),
-              side: const BorderSide(color: Colors.black, width: 1),
-              shape: const RoundedRectangleBorder(
-                  borderRadius:
-                  BorderRadius.all(Radius.circular(10))),
 
-          ),),
-        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );

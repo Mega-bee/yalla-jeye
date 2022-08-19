@@ -146,6 +146,7 @@ List<Restaurants> _restaurants=[];
 
     print("Mypos {$myPos}");
 
+//    Geocoder.google('').findAddressesFromCoordinates(myPos);
 //    List<Placemark> placemarks = await placemarkFromCoordinates(52.2165157, 6.9437819);
     List<Placemark> newPlace = await GeocodingPlatform.instance.placemarkFromCoordinates(myPos.latitude, myPos.longitude,localeIdentifier: "en");
 

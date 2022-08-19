@@ -104,7 +104,8 @@ String _messagePlaceOrder="";
     _listOfObject.map((item) => jsonList.add(item.toJson())).toList();
    allData= await _serviceAPi.postAPiRawJson(ApiLink.placeOrder, {
       "addressId": addressId,
-     "orderDestination":jsonList
+     "orderDestination":jsonList,
+     "promoCode":promoCode
     }, {'Content-Type': 'application/json'}, false);
     if (allData["error"] != null) {
       messagePlaceOrder= allData["error"];
@@ -293,4 +294,6 @@ notifyListeners();
 
   }
   List<OtherOrder> selectedOrder = [];
+
+  String promoCode;
 }

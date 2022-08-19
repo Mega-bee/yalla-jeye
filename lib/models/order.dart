@@ -3,7 +3,7 @@ class OrderModel {
   int orderNumber=0;
   String orderDetails="";
   String orderStatus="";
-  int deliveryPrice=0;
+  num deliveryPrice=0;
   int orderStatusId=0;
   String createdAt="";
   List<DestenationModel> destenation;
@@ -15,10 +15,12 @@ class OrderModel {
     orderNumber = json['orderNumber']??0;
     orderDetails = json['orderDetails']??"Not found";
     orderStatus = json['orderStatus']??"Not found";
-    deliveryPrice = json['deliveryPrice']??0;
+    destenation = List<DestenationModel>.from(json['destinations'].map((model)=> DestenationModel.fromJson(model)));
     orderStatusId=json['orderStatusId']??0;
     createdAt = json['createdAt']??"";
-    destenation = List<DestenationModel>.from(json['destinations'].map((model)=> DestenationModel.fromJson(model)));
+     destenation.forEach((element) {
+      deliveryPrice += element.price;
+    });
   }
 
 }
